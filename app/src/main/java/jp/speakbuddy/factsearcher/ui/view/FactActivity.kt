@@ -1,4 +1,4 @@
-package jp.speakbuddy.edisonandroidexercise.ui.view
+package jp.speakbuddy.factsearcher.ui.view
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -6,14 +6,11 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.lifecycleScope
-import jp.speakbuddy.edisonandroidexercise.ui.widget.FactScreen
-import jp.speakbuddy.edisonandroidexercise.ui.viewmodel.FactActivityViewModel
-import jp.speakbuddy.edisonandroidexercise.ui.theme.CatFactTheme
+import jp.speakbuddy.factsearcher.ui.widget.FactScreen
+import jp.speakbuddy.factsearcher.ui.viewmodel.FactActivityViewModel
+import jp.speakbuddy.factsearcher.ui.theme.FactTheme
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
@@ -23,7 +20,7 @@ class FactActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            CatFactTheme {
+            FactTheme {
                 // A surface container using the 'background' color from the theme
                 Surface(
                     modifier = Modifier.fillMaxSize(),

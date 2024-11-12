@@ -9,11 +9,11 @@ plugins {
 }
 
 android {
-    namespace = "jp.speakbuddy.edisonandroidexercise"
+    namespace = "jp.speakbuddy.factsearcher"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "jp.speakbuddy.edisonandroidexercise"
+        applicationId = "jp.speakbuddy.factsearcher"
         minSdk = 26
         targetSdk = 34
         versionCode = 1

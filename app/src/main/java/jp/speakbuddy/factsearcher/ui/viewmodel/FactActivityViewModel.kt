@@ -1,8 +1,8 @@
-package jp.speakbuddy.edisonandroidexercise.ui.viewmodel
+package jp.speakbuddy.factsearcher.ui.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import jp.speakbuddy.edisonandroidexercise.network.FactServiceProvider
+import jp.speakbuddy.factsearcher.network.FactServiceProvider
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch

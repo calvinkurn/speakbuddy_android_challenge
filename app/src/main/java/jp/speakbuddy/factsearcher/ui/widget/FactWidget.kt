@@ -1,4 +1,4 @@
-package jp.speakbuddy.edisonandroidexercise.ui.widget
+package jp.speakbuddy.factsearcher.ui.widget
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -19,8 +19,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import jp.speakbuddy.edisonandroidexercise.R
-import jp.speakbuddy.edisonandroidexercise.ui.theme.CatFactTheme
+import jp.speakbuddy.factsearcher.R
+import jp.speakbuddy.factsearcher.ui.theme.FactTheme
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
@@ -71,7 +71,7 @@ fun FactScreen(
 @Preview
 @Composable
 private fun FactScreenPreview() {
-    CatFactTheme {
+    FactTheme {
         FactScreen(
             fact = MutableStateFlow(""),
             isLoading = MutableStateFlow(true)
