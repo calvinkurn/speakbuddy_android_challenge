@@ -8,7 +8,7 @@ import retrofit2.Retrofit
 import retrofit2.http.GET
 
 interface FactService {
-    @GET("fact")
+    @GET("/fact")
     suspend fun getFact(): FactResponse
 }
 
@@ -21,7 +21,7 @@ data class FactResponse(
 object FactServiceProvider {
     fun provide(): FactService =
         Retrofit.Builder()
-            .baseUrl("https://catfact.ninja/")
+            .baseUrl("https://catfact.ninja")
             .addConverterFactory(Json.asConverterFactory("application/json".toMediaType()))
             .build()
             .create(FactService::class.java)
