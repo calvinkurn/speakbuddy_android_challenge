@@ -13,7 +13,7 @@ class FactUseCase @Inject constructor(
             CatFactUiModel(
                 fact = it.fact,
                 length = it.length,
-                isContainsCat = it.fact.lowercase(Locale.US).contains("cat")
+                isContainsCat = it.fact.lowercase(Locale.US).contains("cats")
             )
         }
     }

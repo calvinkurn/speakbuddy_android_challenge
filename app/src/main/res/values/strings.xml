@@ -4,4 +4,5 @@
     <!-- Fact Widget -->
     <string name="fact_widget_title">Fact</string>
     <string name="fact_widget_button_update_label">Update fact</string>
+    <string name="fact_multiple_cat">Multiple cats!</string>
 </resources>

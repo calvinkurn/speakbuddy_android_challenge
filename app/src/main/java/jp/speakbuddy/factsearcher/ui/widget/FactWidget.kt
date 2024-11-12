@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -23,13 +24,15 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
 import jp.speakbuddy.factsearcher.R
+import jp.speakbuddy.factsearcher.domain.model.CatFactUiModel
+import jp.speakbuddy.factsearcher.domain.model.DefaultCatFactUiModel
 import jp.speakbuddy.factsearcher.ui.theme.FactTheme
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
 @Composable
-fun FactScreen(
-    fact: StateFlow<String>,
+fun FactWidget(
+    factData: StateFlow<CatFactUiModel>,
     isLoading: StateFlow<Boolean>,
     onUpdateClick: () -> Unit = {}
 ) {
@@ -40,23 +43,51 @@ fun FactScreen(
             .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(
-            space = 16.dp,
-            alignment = Alignment.CenterVertically
+            alignment = Alignment.CenterVertically,
+            space = 12.dp
         )
     ) {
-        val factContent by fact.collectAsState()
+        val factContent by factData.collectAsState()
         val factIsLoading by isLoading.collectAsState()
 
         Text(
             text = stringResource(R.string.fact_widget_title),
-            style = MaterialTheme.typography.titleLarge
+            style = MaterialTheme.typography.titleLarge,
         )
 
         Text(
-            text = factContent,
+            text = factContent.fact,
             style = MaterialTheme.typography.bodyLarge,
             textAlign = TextAlign.Center
         )
+
+        if (factContent.length > 100 || factContent.isContainsCat) {
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(
+                    alignment = Alignment.CenterVertically,
+                    space = 4.dp
+                )
+            ) {
+                HorizontalDivider()
+                if (factContent.length > 100) {
+                    Text(
+                        text = "Content length: ${factContent.length} character",
+                        style = MaterialTheme.typography.bodyLarge,
+                        textAlign = TextAlign.Center
+                    )
+                }
+
+                if (factContent.isContainsCat) {
+                    Text(
+                        text = stringResource(R.string.fact_multiple_cat),
+                        style = MaterialTheme.typography.bodyLarge,
+                        textAlign = TextAlign.Center
+                    )
+                }
+                HorizontalDivider()
+            }
+        }
 
         Button(onClick = onUpdateClick) {
             if (factIsLoading) {
@@ -78,11 +109,17 @@ fun FactScreen(
 
 @Preview
 @Composable
-private fun FactScreenPreview() {
+private fun FactWidgetPreview() {
     FactTheme {
-        FactScreen(
-            fact = MutableStateFlow(""),
-            isLoading = MutableStateFlow(true)
+        FactWidget(
+            factData = MutableStateFlow(
+                CatFactUiModel(
+                    fact = "Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem",
+                    length = 120,
+                    isContainsCat = true
+                )
+            ),
+            isLoading = MutableStateFlow(false)
         )
     }
 }

@@ -5,3 +5,9 @@ data class CatFactUiModel (
     val length: Int,
     val isContainsCat: Boolean
 )
+
+val DefaultCatFactUiModel get() = CatFactUiModel(
+    fact = "",
+    length = 0,
+    isContainsCat = false
+)

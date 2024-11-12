@@ -10,9 +10,9 @@ import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.lifecycleScope
 import dagger.hilt.android.AndroidEntryPoint
-import jp.speakbuddy.factsearcher.ui.widget.FactScreen
 import jp.speakbuddy.factsearcher.ui.viewmodel.FactActivityViewModel
 import jp.speakbuddy.factsearcher.ui.theme.FactTheme
+import jp.speakbuddy.factsearcher.ui.widget.FactWidget
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
@@ -29,8 +29,8 @@ class FactActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    FactScreen(
-                        fact = viewModel.factContent,
+                    FactWidget(
+                        factData = viewModel.factContent,
                         isLoading = viewModel.isLoading,
                         onUpdateClick = { updateFact() }
                     )

@@ -3,6 +3,8 @@ package jp.speakbuddy.factsearcher.ui.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import jp.speakbuddy.factsearcher.domain.model.CatFactUiModel
+import jp.speakbuddy.factsearcher.domain.model.DefaultCatFactUiModel
 import jp.speakbuddy.factsearcher.domain.usecase.FactUseCase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -14,7 +16,7 @@ class FactActivityViewModel @Inject constructor(
     private val factUseCase: FactUseCase
 ) : ViewModel() {
 
-    private val _factContent = MutableStateFlow("-")
+    private val _factContent = MutableStateFlow(DefaultCatFactUiModel)
     val factContent get() = _factContent
 
     private val _errorState = MutableStateFlow("")
@@ -28,7 +30,7 @@ class FactActivityViewModel @Inject constructor(
             _isLoading.tryEmit(true)
             try {
                 factUseCase.getRandomCatFact().let {
-                    _factContent.tryEmit(it.fact)
+                    _factContent.tryEmit(it)
                 }
             } catch (e: Throwable) {
                 // TODO: Implement error mapping (BE error -> FE error)
