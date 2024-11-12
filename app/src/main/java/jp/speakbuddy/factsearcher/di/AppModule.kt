@@ -8,7 +8,6 @@ import jp.speakbuddy.factsearcher.domain.repository.FactRepository
 import jp.speakbuddy.factsearcher.domain.repository.FactRepositoryImpl
 import jp.speakbuddy.factsearcher.network.ApiServices
 import jp.speakbuddy.factsearcher.network.RetrofitProvider
-import retrofit2.Retrofit
 import javax.inject.Singleton
 
 @Module
