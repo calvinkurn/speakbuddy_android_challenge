@@ -2,12 +2,17 @@ package jp.speakbuddy.factsearcher.ui.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import jp.speakbuddy.factsearcher.network.FactServiceProvider
+import dagger.hilt.android.lifecycle.HiltViewModel
+import jp.speakbuddy.factsearcher.domain.usecase.FactUseCase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class FactActivityViewModel() : ViewModel() {
+@HiltViewModel
+class FactActivityViewModel @Inject constructor(
+    private val factUseCase: FactUseCase
+) : ViewModel() {
 
     private val _factContent = MutableStateFlow("-")
     val factContent get() = _factContent
@@ -22,7 +27,7 @@ class FactActivityViewModel() : ViewModel() {
         viewModelScope.launch(Dispatchers.IO) {
             _isLoading.tryEmit(true)
             try {
-                FactServiceProvider.provide().getFact().let {
+                factUseCase.getRandomCatFact().let {
                     _factContent.tryEmit(it.fact)
                 }
             } catch (e: Throwable) {
