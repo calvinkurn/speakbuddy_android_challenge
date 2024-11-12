@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
@@ -18,6 +19,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.TextUnit
+import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
 import jp.speakbuddy.factsearcher.R
 import jp.speakbuddy.factsearcher.ui.theme.FactTheme
@@ -59,10 +62,15 @@ fun FactScreen(
             if (factIsLoading) {
                 CircularProgressIndicator(
                     color = Color.White,
-                    trackColor = Color(0x0DFFFFFF)
+                    trackColor = Color(0x0DFFFFFF),
+                    strokeWidth = 2.5.dp,
+                    modifier = Modifier.size(16.dp)
                 )
             } else {
-                Text(text = stringResource(R.string.fact_widget_button_update_label))
+                Text(
+                    text = stringResource(R.string.fact_widget_button_update_label),
+                    fontSize = TextUnit(16f, TextUnitType.Sp)
+                )
             }
         }
     }
