@@ -32,7 +32,9 @@ class FactActivity : ComponentActivity() {
                     FactWidget(
                         factData = viewModel.factContent,
                         isLoading = viewModel.isLoading,
-                        onUpdateClick = { updateFact() }
+                        isLoved = viewModel.isLoved,
+                        onUpdateClick = { updateFact() },
+                        onFavoriteClick = { addFavoriteFact() }
                     )
                 }
             }
@@ -43,6 +45,10 @@ class FactActivity : ComponentActivity() {
 
     private fun updateFact() {
         viewModel.updateFact()
+    }
+
+    private fun addFavoriteFact(){
+        viewModel.addFactToFavorite()
     }
 
     private fun observe() {

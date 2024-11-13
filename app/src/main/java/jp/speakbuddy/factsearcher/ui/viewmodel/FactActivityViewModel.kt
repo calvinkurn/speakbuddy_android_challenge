@@ -25,11 +25,15 @@ class FactActivityViewModel @Inject constructor(
     private val _isLoading = MutableStateFlow(false)
     val isLoading get() = _isLoading
 
+    private val _isLoved = MutableStateFlow(false)
+    val isLoved get() = _isLoved
+
     fun updateFact() {
         viewModelScope.launch(Dispatchers.IO) {
             _isLoading.tryEmit(true)
             try {
                 factUseCase.getRandomCatFact().let {
+                    _isLoved.tryEmit(_isLoved.value.not())
                     _factContent.tryEmit(it)
                 }
             } catch (e: Throwable) {
@@ -39,6 +43,12 @@ class FactActivityViewModel @Inject constructor(
             }.also {
                 _isLoading.tryEmit(false)
             }
+        }
+    }
+
+    fun addFactToFavorite() {
+        viewModelScope.launch {
+            _isLoved.tryEmit(!_isLoved.value)
         }
     }
 }
