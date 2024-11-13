@@ -22,6 +22,7 @@ class FactActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         setContent {
             FactTheme {
                 // A surface container using the 'background' color from the theme
@@ -32,7 +33,7 @@ class FactActivity : ComponentActivity() {
                     FactWidget(
                         factData = viewModel.factContent,
                         isLoading = viewModel.isLoading,
-                        isLoved = viewModel.isLoved,
+                        isLoved = viewModel.isFavorite,
                         onUpdateClick = { updateFact() },
                         onFavoriteClick = { addFavoriteFact() }
                     )
@@ -41,6 +42,11 @@ class FactActivity : ComponentActivity() {
         }
 
         observe()
+        getLastFact()
+    }
+
+    private fun getLastFact() {
+        viewModel.restoreLastFact()
     }
 
     private fun updateFact() {

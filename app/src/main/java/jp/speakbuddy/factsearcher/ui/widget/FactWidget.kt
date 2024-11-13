@@ -1,10 +1,6 @@
 package jp.speakbuddy.factsearcher.ui.widget
 
 import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.ContentTransform
-import androidx.compose.animation.core.tween
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -34,7 +30,7 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
 import jp.speakbuddy.factsearcher.R
-import jp.speakbuddy.factsearcher.domain.model.CatFactUiModel
+import jp.speakbuddy.factsearcher.data.ui.FactUiModel
 import jp.speakbuddy.factsearcher.ui.theme.FactTheme
 import jp.speakbuddy.factsearcher.ui.theme.LocalCustomColorsPalette
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -42,7 +38,7 @@ import kotlinx.coroutines.flow.StateFlow
 
 @Composable
 fun FactWidget(
-    factData: StateFlow<CatFactUiModel>,
+    factData: StateFlow<FactUiModel>,
     isLoading: StateFlow<Boolean>,
     isLoved: StateFlow<Boolean>,
     onUpdateClick: () -> Unit = {},
@@ -154,7 +150,7 @@ private fun FactWidgetPreview() {
     FactTheme {
         FactWidget(
             factData = MutableStateFlow(
-                CatFactUiModel(
+                FactUiModel(
                     fact = "Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem",
                     length = 120,
                     isContainsCat = true
