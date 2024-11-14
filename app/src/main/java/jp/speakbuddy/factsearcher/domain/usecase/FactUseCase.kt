@@ -8,14 +8,20 @@ import javax.inject.Inject
 class FactUseCase @Inject constructor(
     private val factRepository: FactRepository
 ) {
-    suspend fun getRandomCatFact(): FactUiModel {
-        return factRepository.getRandomFact().let {
-            FactUiModel(
-                factId = System.currentTimeMillis(),
-                fact = it.fact,
-                length = it.length,
-                isContainsCat = it.fact.lowercase(Locale.US).contains("cats")
-            )
+    suspend fun getRandomCatFact(): Result<FactUiModel> {
+        try {
+            factRepository.getRandomFact().let {
+                return Result.success(
+                    FactUiModel(
+                        factId = System.currentTimeMillis(),
+                        fact = it.fact,
+                        length = it.length,
+                        isContainsCat = it.fact.lowercase(Locale.US).contains("cats")
+                    )
+                )
+            }
+        } catch (e: Exception) {
+            return Result.failure(e)
         }
     }
 }

@@ -3,10 +3,12 @@ package jp.speakbuddy.factsearcher.ui.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import jp.speakbuddy.factsearcher.data.ui.DefaultCatFactUiModel
+import jp.speakbuddy.factsearcher.data.ui.DefaultFactUiModel
 import jp.speakbuddy.factsearcher.domain.usecase.FactUseCase
 import jp.speakbuddy.factsearcher.domain.usecase.FavoriteUseCase
 import jp.speakbuddy.factsearcher.domain.usecase.SaveDataUseCase
+import jp.speakbuddy.factsearcher.ui.state.FactUiEvent
+import jp.speakbuddy.factsearcher.ui.state.FactUiState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
@@ -18,76 +20,92 @@ class FactActivityViewModel @Inject constructor(
     private val favoriteUseCase: FavoriteUseCase,
     private val saveDataUseCase: SaveDataUseCase
 ) : ViewModel() {
+    private val _uiState = MutableStateFlow<FactUiState>(FactUiState.Initial)
+    val uiState get() = _uiState
 
-    private val _factContent = MutableStateFlow(DefaultCatFactUiModel)
-    val factContent get() = _factContent
+    private var factContent = DefaultFactUiModel
+    private var isFavorite = false
 
-    private val _errorState = MutableStateFlow("")
-    val errorState get() = _errorState
+    fun onEvent(event: FactUiEvent){
+        when(event) {
+            is FactUiEvent.GetFact -> {
+                updateFact()
+            }
+            is FactUiEvent.CheckFavorite -> {
+                checkFactFavorite()
+            }
+            is FactUiEvent.AddFactToFavorite -> {
+                addFactToFavorite()
+            }
+            is FactUiEvent.RestoreSavedFact -> {
+                restoreLastFact()
+            }
+            is FactUiEvent.SaveFact -> {
+                saveLatestFact()
+            }
+        }
+    }
 
-    private val _isLoading = MutableStateFlow(false)
-    val isLoading get() = _isLoading
-
-    private val _isFavorite = MutableStateFlow(false)
-    val isFavorite get() = _isFavorite
-
-    fun updateFact() {
+    private fun updateFact() {
         viewModelScope.launch(Dispatchers.IO) {
-            _isLoading.tryEmit(true)
-            try {
-                factUseCase.getRandomCatFact().let {
-                    _factContent.tryEmit(it)
-                    _isFavorite.tryEmit(false)
+            _uiState.tryEmit(FactUiState.Loading)
+
+            factUseCase.getRandomCatFact().let {
+                if (it.isSuccess) {
+                    it.getOrNull()?.let { successResult ->
+                        factContent = successResult
+                        _uiState.tryEmit(FactUiState.Success(successResult))
+                    }
+                } else {
+                    it.exceptionOrNull()?.let { throwable ->
+                        _uiState.tryEmit(FactUiState.Error(throwable))
+                    }
                 }
-            } catch (e: Throwable) {
-                // TODO: Implement error mapping (BE error -> FE error)
-                _errorState.tryEmit(e.message ?: "Unknown")
-
-                "something went wrong. error = ${e.message}"
-            }.also {
-                _isLoading.tryEmit(false)
             }
         }
     }
 
-    fun addFactToFavorite() {
+    private fun addFactToFavorite() {
         viewModelScope.launch(Dispatchers.IO) {
-            if (_isFavorite.value) {
-                favoriteUseCase.removeFavoriteFact(_factContent.value)
-                _isFavorite.tryEmit(false)
+            if (isFavorite) {
+                favoriteUseCase.removeFavoriteFact(factContent)
+                _uiState.tryEmit(FactUiState.FavoriteFact(false))
             } else {
-                favoriteUseCase.addFavoriteFact(_factContent.value)
-                _isFavorite.tryEmit(true)
+                favoriteUseCase.addFavoriteFact(factContent)
+                _uiState.tryEmit(FactUiState.FavoriteFact(true))
             }
 
-            saveDataUseCase.saveFactData(_factContent.value)
+            isFavorite = isFavorite.not()
+            saveDataUseCase.saveFactData(factContent)
         }
     }
 
-    fun restoreLastFact() {
+    private fun restoreLastFact() {
         viewModelScope.launch(Dispatchers.IO) {
             saveDataUseCase.getSavedFactData()?.let { (fact, isFavorite) ->
                 if (fact.fact.isEmpty()) {
                     updateFact()
                 } else {
-                    _factContent.tryEmit(fact)
-                    _isFavorite.tryEmit(isFavorite)
+                    factContent = fact
+                    _uiState.tryEmit(FactUiState.Success(fact, isFavorite))
+                    this@FactActivityViewModel.isFavorite = isFavorite
                 }
             }
         }
     }
 
-    fun checkFactFavorite() {
+    private fun checkFactFavorite() {
         viewModelScope.launch(Dispatchers.IO) {
-            favoriteUseCase.isFactFavorite(_factContent.value).also {
-                _isFavorite.tryEmit(it)
+            favoriteUseCase.isFactFavorite(factContent).also {
+                isFavorite = it
+                _uiState.tryEmit(FactUiState.FavoriteFact(it))
             }
         }
     }
 
-    fun saveLatestFact() {
+    private fun saveLatestFact() {
         viewModelScope.launch {
-            saveDataUseCase.saveFactData(_factContent.value)
+            saveDataUseCase.saveFactData(factContent)
         }
     }
 }

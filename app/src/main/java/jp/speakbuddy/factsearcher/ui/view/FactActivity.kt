@@ -17,8 +17,9 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.TextUnit
@@ -27,6 +28,9 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.lifecycleScope
 import dagger.hilt.android.AndroidEntryPoint
 import jp.speakbuddy.factsearcher.R
+import jp.speakbuddy.factsearcher.data.ui.DefaultFactUiModel
+import jp.speakbuddy.factsearcher.ui.state.FactUiEvent
+import jp.speakbuddy.factsearcher.ui.state.FactUiState
 import jp.speakbuddy.factsearcher.ui.viewmodel.FactActivityViewModel
 import jp.speakbuddy.factsearcher.ui.theme.FactTheme
 import jp.speakbuddy.factsearcher.ui.theme.LocalCustomColorsPalette
@@ -38,12 +42,14 @@ import kotlinx.coroutines.launch
 class FactActivity : ComponentActivity() {
     private val viewModel: FactActivityViewModel by viewModels()
 
+    private var factIsLoading by mutableStateOf(false)
+    private var factData by mutableStateOf(DefaultFactUiModel)
+    private var isFactFavorite by mutableStateOf(false)
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         setContent {
-            val factIsLoading by viewModel.isLoading.collectAsState()
-
             FactTheme(
                 dynamicColor = false
             ) {
@@ -59,8 +65,8 @@ class FactActivity : ComponentActivity() {
                             verticalArrangement = Arrangement.Center
                         ) {
                             FactWidget(
-                                factData = viewModel.factContent.collectAsState().value,
-                                isLiked = viewModel.isFavorite.collectAsState().value,
+                                factData = factData,
+                                isLiked = isFactFavorite,
                                 onFavoriteClick = { addFavoriteFact() }
                             )
                         }
@@ -107,24 +113,24 @@ class FactActivity : ComponentActivity() {
 
     override fun onResume() {
         super.onResume()
-        viewModel.checkFactFavorite()
+        viewModel.onEvent(FactUiEvent.CheckFavorite)
     }
 
     override fun onPause() {
         super.onPause()
-        viewModel.saveLatestFact()
+        viewModel.onEvent(FactUiEvent.SaveFact)
     }
 
     private fun getLastFact() {
-        viewModel.restoreLastFact()
+        viewModel.onEvent(FactUiEvent.RestoreSavedFact)
     }
 
     private fun updateFact() {
-        viewModel.updateFact()
+        viewModel.onEvent(FactUiEvent.GetFact)
     }
 
     private fun addFavoriteFact() {
-        viewModel.addFactToFavorite()
+        viewModel.onEvent(FactUiEvent.AddFactToFavorite)
     }
 
     private fun navigateToFavoritePage() {
@@ -134,8 +140,24 @@ class FactActivity : ComponentActivity() {
 
     private fun observe() {
         lifecycleScope.launch {
-            viewModel.errorState.collectLatest {
-                // TODO: Provide UI for error state
+            viewModel.uiState.collectLatest {
+                factIsLoading = false
+                when(it) {
+                    is FactUiState.Loading -> {
+                        factIsLoading = true
+                    }
+                    is FactUiState.Success -> {
+                        factData = it.data
+                        isFactFavorite = it.isFavorite
+                    }
+                    is FactUiState.FavoriteFact -> {
+                        isFactFavorite = it.isFavorite
+                    }
+                    is FactUiState.Error -> {
+                        // TODO: Provide UI for error state
+                    }
+                    else -> {}
+                }
             }
         }
     }

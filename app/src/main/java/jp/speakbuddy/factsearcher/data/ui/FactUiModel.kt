@@ -1,7 +1,6 @@
 package jp.speakbuddy.factsearcher.data.ui
 
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.Transient
 
 /**
  * Note:
@@ -15,7 +14,7 @@ data class FactUiModel (
     val isContainsCat: Boolean
 )
 
-val DefaultCatFactUiModel get() = FactUiModel(
+val DefaultFactUiModel get() = FactUiModel(
     factId = 0,
     fact = "",
     length = 0,
