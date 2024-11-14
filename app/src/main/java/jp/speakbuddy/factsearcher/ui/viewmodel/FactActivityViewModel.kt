@@ -60,15 +60,19 @@ class FactActivityViewModel @Inject constructor(
                 _isFavorite.tryEmit(true)
             }
 
-            saveDataUseCase.saveFactData(_factContent.value, _isFavorite.value)
+            saveDataUseCase.saveFactData(_factContent.value)
         }
     }
 
     fun restoreLastFact() {
         viewModelScope.launch(Dispatchers.IO) {
             saveDataUseCase.getSavedFactData()?.let { (fact, isFavorite) ->
-                _factContent.tryEmit(fact)
-                _isFavorite.tryEmit(isFavorite)
+                if (fact.fact.isEmpty()) {
+                    updateFact()
+                } else {
+                    _factContent.tryEmit(fact)
+                    _isFavorite.tryEmit(isFavorite)
+                }
             }
         }
     }
@@ -83,7 +87,7 @@ class FactActivityViewModel @Inject constructor(
 
     fun saveLatestFact() {
         viewModelScope.launch {
-            saveDataUseCase.saveFactData(_factContent.value, _isFavorite.value)
+            saveDataUseCase.saveFactData(_factContent.value)
         }
     }
 }

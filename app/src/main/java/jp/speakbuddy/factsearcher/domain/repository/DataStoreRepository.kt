@@ -7,15 +7,12 @@ import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import dagger.hilt.android.qualifiers.ApplicationContext
-import jp.speakbuddy.factsearcher.data.network.LastFactNetworkModel
-import jp.speakbuddy.factsearcher.data.ui.DefaultCatFactUiModel
 import jp.speakbuddy.factsearcher.data.ui.FactUiModel
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
 import kotlinx.serialization.builtins.ListSerializer
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
-import kotlinx.serialization.serializer
 import javax.inject.Inject
 
 interface DataStoreRepository {
@@ -24,8 +21,8 @@ interface DataStoreRepository {
     suspend fun removeFavoriteFact(targetData: FactUiModel)
     suspend fun isFactFavorite(fact: FactUiModel): Boolean
 
-    suspend fun getSavedLatestFact(): LastFactNetworkModel?
-    suspend fun saveLatestFact(newData: LastFactNetworkModel)
+    suspend fun getSavedLatestFact(): FactUiModel?
+    suspend fun saveLatestFact(newData: FactUiModel)
 }
 
 class DataStoreRepositoryImpl @Inject constructor(
@@ -58,7 +55,7 @@ class DataStoreRepositoryImpl @Inject constructor(
         } ?: emptyList()
     }
 
-    override suspend fun getSavedLatestFact(): LastFactNetworkModel? {
+    override suspend fun getSavedLatestFact(): FactUiModel? {
         return dataStore.data.map {
             it[latestDataKey]
         }.firstOrNull()?.let {
@@ -66,7 +63,7 @@ class DataStoreRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun saveLatestFact(newData: LastFactNetworkModel) {
+    override suspend fun saveLatestFact(newData: FactUiModel) {
         dataStore.edit {
             it[latestDataKey] = Json.encodeToString(newData)
         }
