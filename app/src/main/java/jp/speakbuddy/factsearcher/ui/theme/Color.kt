@@ -3,19 +3,29 @@ package jp.speakbuddy.factsearcher.ui.theme
 import androidx.compose.ui.graphics.Color
 
 // Light
-val Purple80 = Color(0xFFD0BCFF)
-val PurpleGrey80 = Color(0xFFCCC2DC)
-val Pink80 = Color(0xFFEFB8C8)
+enum class LightColorCollection(val color: Color) {
+    Background(Color(0xFFFFFFFF)),
 
-val FavoriteOutlineLight = Color(0xFF000000)
-val FavoriteFilledLight = Color(0xFFF9585E)
+    Surface(Color(0xFFFBF0CD)),
+    OnSurface(Color(0xFF3C3C3C)),
 
-// =====================================================
+    FavoriteOutlineLight(Color(0xFF757575)),
+    FavoriteFilledLight(Color(0xFFF9585E)),
+
+    CircularLoadingTrail(Color(0x0DFFFFFF)),
+    CircularLoading(Color(0xFFFFFFFF)),
+}
 
 // Dark
-val Purple40 = Color(0xFF6650a4)
-val PurpleGrey40 = Color(0xFF625b71)
-val Pink40 = Color(0xFF7D5260)
+enum class DarkColorCollection(val color: Color) {
+    Background(Color(0xFF121212)),
 
-val FavoriteOutlineDark = Color(0xFF000000)
-val FavoriteFilledDark = Color(0xF009005E)
+    Surface(Color(0xFF9C7C57 )),
+    OnSurface(Color(0xFF2C2C2C)),
+
+    FavoriteOutlineDark(Color(0xFFBDBDBD)),
+    FavoriteFilledDark(Color(0xFFB33C3F)),
+
+    CircularLoadingTrail(Color(0x0CFFFFFF)),
+    CircularLoading(Color(0x50FFFFFF)),
+}
