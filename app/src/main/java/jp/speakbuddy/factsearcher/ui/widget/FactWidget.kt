@@ -34,32 +34,8 @@ import jp.speakbuddy.factsearcher.ui.theme.LocalCustomColorsPalette
 fun FactWidget(
     factData: FactUiModel,
     isLiked: Boolean,
-    onFavoriteClick: () -> Unit
-) {
-    val factDataState = remember {
-        mutableStateOf(factData)
-    }
-
-    val isLikedState = remember {
-        mutableStateOf(isLiked)
-    }
-
-    FactWidget(
-        factDataState,
-        isLikedState,
-        onFavoriteClick = { onFavoriteClick() }
-    )
-}
-
-@Composable
-fun FactWidget(
-    factData: State<FactUiModel>,
-    isLiked: State<Boolean>,
     onFavoriteClick: () -> Unit = {}
 ) {
-    val factContent = factData.value
-    val factIsLiked = isLiked.value
-
     ElevatedCard(
         colors = CardDefaults.cardColors().copy(
             containerColor = MaterialTheme.colorScheme.surface
@@ -85,7 +61,7 @@ fun FactWidget(
 
                 AnimatedContent(
                     modifier = Modifier.align(Alignment.CenterEnd),
-                    targetState = factIsLiked,
+                    targetState = isLiked,
                     label = "Like Animation"
                 ) {
                     var color = LocalCustomColorsPalette.current.favoriteOutline
@@ -110,12 +86,12 @@ fun FactWidget(
             }
 
             Text(
-                text = factContent.fact,
+                text = factData.fact,
                 style = MaterialTheme.typography.bodyLarge,
                 textAlign = TextAlign.Center
             )
 
-            if (factContent.length > 100 || factContent.isContainsCat) {
+            if (factData.length > 100 || factData.isContainsCat) {
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.spacedBy(
@@ -127,15 +103,15 @@ fun FactWidget(
                         modifier = Modifier.padding(bottom = 4.dp),
                         color = MaterialTheme.colorScheme.onSurface
                     )
-                    if (factContent.length > 100) {
+                    if (factData.length > 100) {
                         Text(
-                            text = "Content length: ${factContent.length} character",
+                            text = "Content length: ${factData.length} character",
                             style = MaterialTheme.typography.bodyLarge,
                             textAlign = TextAlign.Center
                         )
                     }
 
-                    if (factContent.isContainsCat) {
+                    if (factData.isContainsCat) {
                         Text(
                             text = stringResource(R.string.fact_multiple_cat),
                             style = MaterialTheme.typography.bodyLarge,
@@ -151,24 +127,15 @@ fun FactWidget(
 @Preview
 @Composable
 private fun FactWidgetPreview() {
-    val data = remember {
-        mutableStateOf(
-            FactUiModel(
+    FactTheme {
+        FactWidget(
+            factData = FactUiModel(
                 fact = "Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem",
                 length = 120,
                 isContainsCat = true,
                 factId = 0
-            )
-        )
-    }
-    val isLiked = remember {
-        mutableStateOf(false)
-    }
-
-    FactTheme {
-        FactWidget(
-            factData = data,
-            isLiked = isLiked
+            ),
+            isLiked = false
         )
     }
 }
