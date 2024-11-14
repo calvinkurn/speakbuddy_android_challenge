@@ -22,6 +22,7 @@ interface DataStoreRepository {
     suspend fun getFavoriteList(): List<FactUiModel>
     suspend fun addFavoriteFact(newData: FactUiModel)
     suspend fun removeFavoriteFact(targetData: FactUiModel)
+    suspend fun isFactFavorite(fact: FactUiModel): Boolean
 
     suspend fun getSavedLatestFact(): LastFactNetworkModel?
     suspend fun saveLatestFact(newData: LastFactNetworkModel)
@@ -69,6 +70,10 @@ class DataStoreRepositoryImpl @Inject constructor(
         dataStore.edit {
             it[latestDataKey] = Json.encodeToString(newData)
         }
+    }
+
+    override suspend fun isFactFavorite(fact: FactUiModel): Boolean {
+        return getFavoriteList().contains(fact)
     }
 
     private suspend fun writeFavoriteFactToStorage(newList: List<FactUiModel>) {

@@ -38,8 +38,6 @@ class FactActivityViewModel @Inject constructor(
                 factUseCase.getRandomCatFact().let {
                     _factContent.tryEmit(it)
                     _isFavorite.tryEmit(false)
-
-                    saveDataUseCase.saveFactData(_factContent.value, false)
                 }
             } catch (e: Throwable) {
                 // TODO: Implement error mapping (BE error -> FE error)
@@ -72,6 +70,20 @@ class FactActivityViewModel @Inject constructor(
                 _factContent.tryEmit(fact)
                 _isFavorite.tryEmit(isFavorite)
             }
+        }
+    }
+
+    fun checkFactFavorite() {
+        viewModelScope.launch(Dispatchers.IO) {
+            favoriteUseCase.isFactFavorite(_factContent.value).also {
+                _isFavorite.tryEmit(it)
+            }
+        }
+    }
+
+    fun saveLatestFact() {
+        viewModelScope.launch {
+            saveDataUseCase.saveFactData(_factContent.value, _isFavorite.value)
         }
     }
 }

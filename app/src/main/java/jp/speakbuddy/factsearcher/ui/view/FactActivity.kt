@@ -105,6 +105,16 @@ class FactActivity : ComponentActivity() {
         getLastFact()
     }
 
+    override fun onResume() {
+        super.onResume()
+        viewModel.checkFactFavorite()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        viewModel.saveLatestFact()
+    }
+
     private fun getLastFact() {
         viewModel.restoreLastFact()
     }

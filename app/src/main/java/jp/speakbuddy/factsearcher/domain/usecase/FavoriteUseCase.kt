@@ -27,4 +27,8 @@ class FavoriteUseCase @Inject constructor(
     suspend fun getFavoriteFact(): List<FactUiModel> {
         return dataStoreRepository.getFavoriteList()
     }
+
+    suspend fun isFactFavorite(fact: FactUiModel): Boolean {
+        return dataStoreRepository.isFactFavorite(fact)
+    }
 }
