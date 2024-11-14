@@ -22,10 +22,9 @@ interface DataStoreRepository {
     suspend fun getFavoriteList(): List<FactUiModel>
     suspend fun addFavoriteFact(newData: FactUiModel)
     suspend fun removeFavoriteFact(targetData: FactUiModel)
-    suspend fun saveLatestFact(newData: LastFactNetworkModel)
 
-    // latest fact & favorite state
     suspend fun getSavedLatestFact(): LastFactNetworkModel?
+    suspend fun saveLatestFact(newData: LastFactNetworkModel)
 }
 
 class DataStoreRepositoryImpl @Inject constructor(
