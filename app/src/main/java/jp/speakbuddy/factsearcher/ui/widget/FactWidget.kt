@@ -15,8 +15,9 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.State
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -28,15 +29,37 @@ import jp.speakbuddy.factsearcher.R
 import jp.speakbuddy.factsearcher.data.ui.FactUiModel
 import jp.speakbuddy.factsearcher.ui.theme.FactTheme
 import jp.speakbuddy.factsearcher.ui.theme.LocalCustomColorsPalette
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 
 @Composable
 fun FactWidget(
-    factData: StateFlow<FactUiModel>,
-    isLoved: StateFlow<Boolean>,
+    factData: FactUiModel,
+    isLiked: Boolean,
+    onFavoriteClick: () -> Unit
+) {
+    val factDataState = remember {
+        mutableStateOf(factData)
+    }
+
+    val isLikedState = remember {
+        mutableStateOf(isLiked)
+    }
+
+    FactWidget(
+        factDataState,
+        isLikedState,
+        onFavoriteClick = { onFavoriteClick() }
+    )
+}
+
+@Composable
+fun FactWidget(
+    factData: State<FactUiModel>,
+    isLiked: State<Boolean>,
     onFavoriteClick: () -> Unit = {}
 ) {
+    val factContent = factData.value
+    val factIsLiked = isLiked.value
+
     ElevatedCard(
         colors = CardDefaults.cardColors().copy(
             containerColor = MaterialTheme.colorScheme.surface
@@ -51,9 +74,6 @@ fun FactWidget(
                 space = 16.dp
             )
         ) {
-            val factContent by factData.collectAsState()
-            val factIsLoved by isLoved.collectAsState()
-
             Box(
                 modifier = Modifier.fillMaxWidth()
             ) {
@@ -65,7 +85,7 @@ fun FactWidget(
 
                 AnimatedContent(
                     modifier = Modifier.align(Alignment.CenterEnd),
-                    targetState = factIsLoved,
+                    targetState = factIsLiked,
                     label = "Like Animation"
                 ) {
                     var color = LocalCustomColorsPalette.current.favoriteOutline
@@ -77,9 +97,11 @@ fun FactWidget(
                     }
 
                     Icon(
-                        modifier = Modifier.size(32.dp).clickable {
-                            onFavoriteClick()
-                        },
+                        modifier = Modifier
+                            .size(32.dp)
+                            .clickable {
+                                onFavoriteClick()
+                            },
                         painter = painter,
                         contentDescription = "Favorite Icon",
                         tint = color
@@ -129,16 +151,23 @@ fun FactWidget(
 @Preview
 @Composable
 private fun FactWidgetPreview() {
+    val data = remember {
+        mutableStateOf(
+            FactUiModel(
+                fact = "Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem",
+                length = 120,
+                isContainsCat = true
+            )
+        )
+    }
+    val isLiked = remember {
+        mutableStateOf(false)
+    }
+
     FactTheme {
         FactWidget(
-            factData = MutableStateFlow(
-                FactUiModel(
-                    fact = "Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem",
-                    length = 120,
-                    isContainsCat = true
-                )
-            ),
-            isLoved = MutableStateFlow(false)
+            factData = data,
+            isLiked = isLiked
         )
     }
 }

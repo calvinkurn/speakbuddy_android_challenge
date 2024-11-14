@@ -59,8 +59,8 @@ class FactActivity : ComponentActivity() {
                             verticalArrangement = Arrangement.Center
                         ) {
                             FactWidget(
-                                factData = viewModel.factContent,
-                                isLoved = viewModel.isFavorite,
+                                factData = viewModel.factContent.collectAsState(),
+                                isLiked = viewModel.isFavorite.collectAsState(),
                                 onFavoriteClick = { addFavoriteFact() }
                             )
                         }
