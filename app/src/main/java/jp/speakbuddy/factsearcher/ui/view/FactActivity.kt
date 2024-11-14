@@ -1,5 +1,6 @@
 package jp.speakbuddy.factsearcher.ui.view
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -70,7 +71,7 @@ class FactActivity : ComponentActivity() {
                         ) {
                             Button(
                                 modifier = Modifier.weight(1f),
-                                onClick = {}
+                                onClick = { navigateToFavoritePage() }
                             ) {
                                 Text(stringResource(R.string.fact_page_button_favorite_label))
                             }
@@ -114,6 +115,11 @@ class FactActivity : ComponentActivity() {
 
     private fun addFavoriteFact() {
         viewModel.addFactToFavorite()
+    }
+
+    private fun navigateToFavoritePage() {
+        val intent = Intent(this, FavoriteActivity::class.java)
+        startActivity(intent)
     }
 
     private fun observe() {
