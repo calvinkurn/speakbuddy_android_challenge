@@ -9,7 +9,7 @@ import kotlinx.serialization.Transient
  */
 @Serializable
 data class FactUiModel (
-    @Transient val factId: Long = 0L,
+    val factId: Long = 0L,
     val fact: String,
     val length: Int,
     val isContainsCat: Boolean
