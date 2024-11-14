@@ -1,6 +1,5 @@
 package jp.speakbuddy.factsearcher.domain.usecase
 
-import jp.speakbuddy.factsearcher.data.network.FactNetworkModel
 import jp.speakbuddy.factsearcher.data.network.LastFactNetworkModel
 import jp.speakbuddy.factsearcher.data.ui.FactUiModel
 import jp.speakbuddy.factsearcher.domain.repository.DataStoreRepository
