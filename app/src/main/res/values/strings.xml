@@ -3,6 +3,9 @@
 
     <!-- Fact Widget -->
     <string name="fact_widget_title">Fact</string>
-    <string name="fact_widget_button_update_label">Update fact</string>
     <string name="fact_multiple_cat">Multiple cats!</string>
+
+    <!-- Face Page -->
+    <string name="fact_page_button_update_label">Update Fact</string>
+    <string name="fact_page_button_favorite_label">Favorite Fact</string>
 </resources>
