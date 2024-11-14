@@ -11,6 +11,7 @@ class FactUseCase @Inject constructor(
     suspend fun getRandomCatFact(): FactUiModel {
         return factRepository.getRandomFact().let {
             FactUiModel(
+                factId = System.currentTimeMillis(),
                 fact = it.fact,
                 length = it.length,
                 isContainsCat = it.fact.lowercase(Locale.US).contains("cats")

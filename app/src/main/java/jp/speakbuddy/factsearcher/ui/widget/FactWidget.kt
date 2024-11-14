@@ -156,7 +156,8 @@ private fun FactWidgetPreview() {
             FactUiModel(
                 fact = "Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem",
                 length = 120,
-                isContainsCat = true
+                isContainsCat = true,
+                factId = 0
             )
         )
     }

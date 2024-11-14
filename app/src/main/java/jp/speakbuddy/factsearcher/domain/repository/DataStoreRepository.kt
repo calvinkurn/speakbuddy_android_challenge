@@ -44,7 +44,7 @@ class DataStoreRepositoryImpl @Inject constructor(
 
     override suspend fun removeFavoriteFact(targetData: FactUiModel) {
         val newList = getFavoriteList().filter {
-            it.isEqual(targetData).not()
+            it.factId != targetData.factId
         }
 
         writeFavoriteFactToStorage(newList)
