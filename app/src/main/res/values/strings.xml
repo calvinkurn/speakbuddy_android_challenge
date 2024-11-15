@@ -8,4 +8,8 @@
     <!-- Face Page -->
     <string name="fact_page_button_update_label">Update Fact</string>
     <string name="fact_page_button_favorite_label">Favorite Fact</string>
+
+    <!-- Error Widget -->
+    <string name="error_widget_title">Error</string>
+    <string name="error_widget_btn_label">OK</string>
 </resources>

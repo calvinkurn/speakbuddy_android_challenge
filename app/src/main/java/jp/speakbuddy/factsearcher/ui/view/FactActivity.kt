@@ -2,6 +2,7 @@ package jp.speakbuddy.factsearcher.ui.view
 
 import android.content.Intent
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
@@ -34,6 +35,7 @@ import jp.speakbuddy.factsearcher.ui.eventstate.FactUiState
 import jp.speakbuddy.factsearcher.ui.viewmodel.FactActivityViewModel
 import jp.speakbuddy.factsearcher.ui.theme.FactTheme
 import jp.speakbuddy.factsearcher.ui.theme.LocalCustomColorsPalette
+import jp.speakbuddy.factsearcher.ui.widget.ErrorPopup
 import jp.speakbuddy.factsearcher.ui.widget.FactWidget
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -45,6 +47,7 @@ class FactActivity : ComponentActivity() {
     private var factIsLoading by mutableStateOf(false)
     private var factData by mutableStateOf(DefaultFactUiModel)
     private var isFactFavorite by mutableStateOf(false)
+    private var errorMsg by mutableStateOf("")
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -104,6 +107,12 @@ class FactActivity : ComponentActivity() {
                         }
                     }
                 }
+
+                if (errorMsg.isNotEmpty()) {
+                    ErrorPopup(errorMsg, onDismiss = {
+                        errorMsg = ""
+                    })
+                }
             }
         }
 
@@ -154,7 +163,7 @@ class FactActivity : ComponentActivity() {
                         isFactFavorite = it.isFavorite
                     }
                     is FactUiState.Error -> {
-                        // TODO: Provide UI for error state
+                        errorMsg = it.errorMsg
                     }
                     else -> {}
                 }

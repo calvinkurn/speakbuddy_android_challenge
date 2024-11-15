@@ -1,7 +1,5 @@
 package jp.speakbuddy.factsearcher.domain.error
 
-import kotlinx.serialization.StringFormat
-
 fun getErrorMessage(errorType: ErrorType): String {
     return when(errorType){
         ErrorType.NoConnection -> NO_CONNECTION_ERROR_MSG
