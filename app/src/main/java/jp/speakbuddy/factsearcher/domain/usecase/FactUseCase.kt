@@ -1,17 +1,21 @@
 package jp.speakbuddy.factsearcher.domain.usecase
 
 import jp.speakbuddy.factsearcher.data.ui.FactUiModel
+import jp.speakbuddy.factsearcher.domain.error.ErrorType
 import jp.speakbuddy.factsearcher.domain.repository.FactRepository
+import jp.speakbuddy.factsearcher.domain.usecase.utils.FactResult
+import retrofit2.HttpException
+import java.io.IOException
 import java.util.Locale
 import javax.inject.Inject
 
 class FactUseCase @Inject constructor(
     private val factRepository: FactRepository
 ) {
-    suspend fun getRandomCatFact(): Result<FactUiModel> {
-        try {
+    suspend fun getRandomCatFact(): FactResult<FactUiModel> {
+        return try {
             factRepository.getRandomFact().let {
-                return Result.success(
+                FactResult.Success(
                     FactUiModel(
                         factId = System.currentTimeMillis(),
                         fact = it.fact,
@@ -20,8 +24,17 @@ class FactUseCase @Inject constructor(
                     )
                 )
             }
+        } catch (e: HttpException) {
+            val error = when(e.code()) {
+                500 -> ErrorType.ServiceError
+                404 -> ErrorType.ServiceNotFound
+                else -> ErrorType.UnknownError
+            }
+            FactResult.Failure(error)
+        } catch (e: IOException) {
+            FactResult.Failure(ErrorType.NoConnection)
         } catch (e: Exception) {
-            return Result.failure(e)
+            FactResult.Failure(ErrorType.UnknownError)
         }
     }
 }

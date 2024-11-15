@@ -4,11 +4,13 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import jp.speakbuddy.factsearcher.data.ui.DefaultFactUiModel
+import jp.speakbuddy.factsearcher.domain.error.getErrorMessage
 import jp.speakbuddy.factsearcher.domain.usecase.FactUseCase
 import jp.speakbuddy.factsearcher.domain.usecase.FavoriteUseCase
 import jp.speakbuddy.factsearcher.domain.usecase.SaveDataUseCase
-import jp.speakbuddy.factsearcher.ui.state.FactUiEvent
-import jp.speakbuddy.factsearcher.ui.state.FactUiState
+import jp.speakbuddy.factsearcher.domain.usecase.utils.FactResult
+import jp.speakbuddy.factsearcher.ui.eventstate.FactUiEvent
+import jp.speakbuddy.factsearcher.ui.eventstate.FactUiState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
@@ -26,20 +28,24 @@ class FactActivityViewModel @Inject constructor(
     private var factContent = DefaultFactUiModel
     private var isFavorite = false
 
-    fun onEvent(event: FactUiEvent){
-        when(event) {
+    fun onEvent(event: FactUiEvent) {
+        when (event) {
             is FactUiEvent.GetFact -> {
                 updateFact()
             }
+
             is FactUiEvent.CheckFavorite -> {
                 checkFactFavorite()
             }
+
             is FactUiEvent.AddFactToFavorite -> {
                 addFactToFavorite()
             }
+
             is FactUiEvent.RestoreSavedFact -> {
                 restoreLastFact()
             }
+
             is FactUiEvent.SaveFact -> {
                 saveLatestFact()
             }
@@ -51,14 +57,14 @@ class FactActivityViewModel @Inject constructor(
             _uiState.tryEmit(FactUiState.Loading)
 
             factUseCase.getRandomCatFact().let {
-                if (it.isSuccess) {
-                    it.getOrNull()?.let { successResult ->
-                        factContent = successResult
-                        _uiState.tryEmit(FactUiState.Success(successResult))
+                when (it) {
+                    is FactResult.Success -> {
+                        val newFact = it.data
+                        factContent = newFact
+                        _uiState.tryEmit(FactUiState.Success(newFact))
                     }
-                } else {
-                    it.exceptionOrNull()?.let { throwable ->
-                        _uiState.tryEmit(FactUiState.Error(throwable))
+                    is FactResult.Failure -> {
+                        _uiState.tryEmit(FactUiState.Error(getErrorMessage(it.error)))
                     }
                 }
             }
