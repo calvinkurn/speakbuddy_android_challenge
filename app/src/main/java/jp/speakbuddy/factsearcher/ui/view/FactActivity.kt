@@ -29,8 +29,8 @@ import androidx.lifecycle.lifecycleScope
 import dagger.hilt.android.AndroidEntryPoint
 import jp.speakbuddy.factsearcher.R
 import jp.speakbuddy.factsearcher.data.ui.DefaultFactUiModel
-import jp.speakbuddy.factsearcher.ui.state.FactUiEvent
-import jp.speakbuddy.factsearcher.ui.state.FactUiState
+import jp.speakbuddy.factsearcher.ui.eventstate.FactUiEvent
+import jp.speakbuddy.factsearcher.ui.eventstate.FactUiState
 import jp.speakbuddy.factsearcher.ui.viewmodel.FactActivityViewModel
 import jp.speakbuddy.factsearcher.ui.theme.FactTheme
 import jp.speakbuddy.factsearcher.ui.theme.LocalCustomColorsPalette
