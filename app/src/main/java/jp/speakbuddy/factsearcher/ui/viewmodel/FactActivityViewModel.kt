@@ -110,7 +110,7 @@ class FactActivityViewModel @Inject constructor(
     }
 
     private fun saveLatestFact() {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             saveDataUseCase.saveFactData(factContent)
         }
     }
