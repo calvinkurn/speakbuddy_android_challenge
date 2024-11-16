@@ -2,7 +2,6 @@ package jp.speakbuddy.factsearcher.ui.view
 
 import android.content.Intent
 import android.os.Bundle
-import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
@@ -37,6 +36,7 @@ import jp.speakbuddy.factsearcher.ui.theme.FactTheme
 import jp.speakbuddy.factsearcher.ui.theme.LocalCustomColorsPalette
 import jp.speakbuddy.factsearcher.ui.widget.ErrorPopup
 import jp.speakbuddy.factsearcher.ui.widget.FactWidget
+import jp.speakbuddy.factsearcher.ui.widget.HeaderWidget
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
@@ -61,6 +61,11 @@ class FactActivity : ComponentActivity() {
                     color = MaterialTheme.colorScheme.background
                 ) {
                     Column {
+                        HeaderWidget(
+                            withBackButton = false,
+                            title = stringResource(R.string.fact_page_title)
+                        )
+
                         Column(
                             Modifier
                                 .weight(1f)
