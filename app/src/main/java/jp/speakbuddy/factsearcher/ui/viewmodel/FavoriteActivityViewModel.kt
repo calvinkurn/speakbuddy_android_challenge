@@ -5,6 +5,8 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import jp.speakbuddy.factsearcher.data.ui.FactUiModel
 import jp.speakbuddy.factsearcher.domain.usecase.FavoriteUseCase
+import jp.speakbuddy.factsearcher.ui.eventstate.FavoriteUiEvent
+import jp.speakbuddy.factsearcher.ui.eventstate.FavoriteUiState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
@@ -14,21 +16,32 @@ import javax.inject.Inject
 class FavoriteActivityViewModel @Inject constructor(
     private val favoriteUseCase: FavoriteUseCase
 ): ViewModel() {
-    private val _favoriteFactData = MutableStateFlow<List<FactUiModel>>(listOf())
-    val favoriteFactData get() = _favoriteFactData
+    private val _uiState = MutableStateFlow<FavoriteUiState>(FavoriteUiState.Initial)
+    val uiState get() = _uiState
 
-    fun getFavoriteFactData() {
-        viewModelScope.launch(Dispatchers.IO) {
-            favoriteUseCase.getFavoriteFact().also {
-                _favoriteFactData.tryEmit(it)
+    fun onEvent(event: FavoriteUiEvent) {
+        when(event){
+            is FavoriteUiEvent.GetFavoriteFact -> {
+                getFavoriteFactData()
+            }
+            is FavoriteUiEvent.DislikeFact -> {
+               dislikeFact(event.fact)
             }
         }
     }
 
-    fun dislikeFact(targetFact: FactUiModel) {
+    private fun getFavoriteFactData() {
+        viewModelScope.launch(Dispatchers.IO) {
+            favoriteUseCase.getFavoriteFact().also {
+                _uiState.tryEmit(FavoriteUiState.Success(it))
+            }
+        }
+    }
+
+    private fun dislikeFact(targetFact: FactUiModel) {
         viewModelScope.launch(Dispatchers.IO) {
             favoriteUseCase.removeAndReturnFavoriteFact(targetFact).also {
-                _favoriteFactData.tryEmit(it)
+                _uiState.tryEmit(FavoriteUiState.Success(it))
             }
         }
     }

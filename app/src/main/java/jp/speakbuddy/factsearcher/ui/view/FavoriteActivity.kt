@@ -15,23 +15,30 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.lifecycleScope
 import dagger.hilt.android.AndroidEntryPoint
 import jp.speakbuddy.factsearcher.data.ui.FactUiModel
+import jp.speakbuddy.factsearcher.ui.eventstate.FavoriteUiEvent
+import jp.speakbuddy.factsearcher.ui.eventstate.FavoriteUiState
 import jp.speakbuddy.factsearcher.ui.theme.FactTheme
 import jp.speakbuddy.factsearcher.ui.viewmodel.FavoriteActivityViewModel
 import jp.speakbuddy.factsearcher.ui.widget.FactWidget
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class FavoriteActivity : ComponentActivity() {
     private val viewModel: FavoriteActivityViewModel by viewModels()
 
+    private var favoriteFactList = mutableStateListOf<FactUiModel>()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            val favoriteItem by viewModel.favoriteFactData.collectAsState()
-
             FactTheme(
                 dynamicColor = false
             ) {
@@ -46,7 +53,7 @@ class FavoriteActivity : ComponentActivity() {
                             modifier = Modifier.weight(1f).padding(horizontal = 16.dp),
                             verticalArrangement = Arrangement.spacedBy(16.dp)
                         ) {
-                            items(favoriteItem) {
+                            items(favoriteFactList) {
                                 FactWidget(
                                     factData = it,
                                     isLiked = true,
@@ -61,14 +68,29 @@ class FavoriteActivity : ComponentActivity() {
             }
         }
 
+        observe()
         fetchFavoriteItem()
     }
 
+    private fun observe() {
+        lifecycleScope.launch {
+            viewModel.uiState.collectLatest {
+                when(it){
+                    is FavoriteUiState.Success -> {
+                        favoriteFactList.clear()
+                        favoriteFactList.addAll(it.favoriteFactList)
+                    }
+                    is FavoriteUiState.Initial -> {}
+                }
+            }
+        }
+    }
+
     private fun fetchFavoriteItem() {
-        viewModel.getFavoriteFactData()
+        viewModel.onEvent(FavoriteUiEvent.GetFavoriteFact)
     }
 
     private fun dislikeFact(targetFact: FactUiModel) {
-        viewModel.dislikeFact(targetFact)
+        viewModel.onEvent(FavoriteUiEvent.DislikeFact(targetFact))
     }
 }
