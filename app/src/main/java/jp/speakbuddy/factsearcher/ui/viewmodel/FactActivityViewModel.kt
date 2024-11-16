@@ -61,6 +61,7 @@ class FactActivityViewModel @Inject constructor(
                     is FactResult.Success -> {
                         val newFact = it.data
                         factContent = newFact
+                        isFavorite = false
                         _uiState.tryEmit(FactUiState.Success(newFact))
                     }
                     is FactResult.Failure -> {
