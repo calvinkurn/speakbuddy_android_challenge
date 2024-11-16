@@ -2,6 +2,7 @@ package jp.speakbuddy.factsearcher.ui
 
 import app.cash.turbine.test
 import io.mockk.Runs
+import io.mockk.clearMocks
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.just
@@ -22,6 +23,7 @@ import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.TestCoroutineScheduler
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
+import org.junit.After
 import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Test
@@ -46,6 +48,12 @@ class FactActivityViewModelTest {
         viewModel = FactActivityViewModel(
             factUseCase, favoriteUseCase, saveDataUseCase
         )
+    }
+
+    @After
+    fun cleanUp() {
+        clearMocks(factRepository)
+        clearMocks(dataStoreRepository)
     }
 
     // Test FactUiEvent.GetFact & FactUiEvent.CheckFavorite
