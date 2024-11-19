@@ -51,7 +51,6 @@ class FactActivityViewModelTest {
         clearMocks(dataStoreRepository)
     }
 
-    // Test FactUiEvent.GetFact & FactUiEvent.CheckFavorite
     @Test
     fun `Should get new fact`() = runTest {
         val expectedFavoriteState = true
@@ -68,7 +67,10 @@ class FactActivityViewModelTest {
             val successResult = awaitItem()
 
             assertTrue(successResult is FactUiState.Success)
-            assertEquals(factNetworkModelSample.fact, (successResult as FactUiState.Success).data.fact)
+
+            val successData = successResult as FactUiState.Success
+            assertEquals(factNetworkModelSample.fact, successData.data.fact)
+            assertTrue(!successData.data.isContainsCat)
 
             viewModel.onEvent(FactUiEvent.CheckFavorite)
 
