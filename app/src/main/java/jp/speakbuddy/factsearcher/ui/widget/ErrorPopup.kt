@@ -2,9 +2,7 @@ package jp.speakbuddy.factsearcher.ui.widget
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
@@ -48,16 +46,18 @@ fun ErrorPopup(
                         color = MaterialTheme.colorScheme.error
                     )
                 )
-                Spacer(modifier = Modifier.height(8.dp))
+
                 Text(
+                    modifier = Modifier.padding(top = 12.dp),
                     text = message,
                     style = MaterialTheme.typography.bodyMedium.copy(
                         color = MaterialTheme.colorScheme.onSurface
                     ),
                     textAlign = TextAlign.Center
                 )
-                Spacer(modifier = Modifier.height(16.dp))
+
                 Button(
+                    modifier = Modifier.padding(top = 16.dp),
                     onClick = onDismiss,
                     colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error)
                 ) {
