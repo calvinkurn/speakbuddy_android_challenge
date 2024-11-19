@@ -8,6 +8,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.HorizontalDivider
@@ -33,6 +35,8 @@ fun FactWidget(
     isLiked: Boolean,
     onFavoriteClick: () -> Unit = {}
 ) {
+    val scrollState = rememberScrollState()
+
     ElevatedCard(
         colors = CardDefaults.cardColors().copy(
             containerColor = MaterialTheme.colorScheme.surface
@@ -40,7 +44,8 @@ fun FactWidget(
     ) {
         Column(
             modifier = Modifier
-                .padding(8.dp),
+                .padding(8.dp)
+                .verticalScroll(scrollState),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(
                 alignment = Alignment.CenterVertically,
