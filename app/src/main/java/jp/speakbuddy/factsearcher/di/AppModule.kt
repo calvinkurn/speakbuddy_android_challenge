@@ -38,4 +38,10 @@ object AppModule {
     fun provideFavoriteRepository(@ApplicationContext context: Context): DataStoreRepository {
         return DataStoreRepositoryImpl(context)
     }
+
+    @Provides
+    @Singleton
+    fun provideDispatcherProvider(): DispatchersProvider {
+        return DefaultDispatcherProvider()
+    }
 }

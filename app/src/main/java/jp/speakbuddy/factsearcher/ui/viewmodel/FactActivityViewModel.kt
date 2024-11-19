@@ -3,6 +3,7 @@ package jp.speakbuddy.factsearcher.ui.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import jp.speakbuddy.factsearcher.di.DispatchersProvider
 import jp.speakbuddy.factsearcher.ui.data.DefaultFactUiModel
 import jp.speakbuddy.factsearcher.domain.error.getErrorMessage
 import jp.speakbuddy.factsearcher.domain.usecase.FactUseCase
@@ -11,7 +12,6 @@ import jp.speakbuddy.factsearcher.domain.usecase.SaveDataUseCase
 import jp.speakbuddy.factsearcher.domain.usecase.utils.FactResult
 import jp.speakbuddy.factsearcher.ui.eventstate.FactUiEvent
 import jp.speakbuddy.factsearcher.ui.eventstate.FactUiState
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -20,7 +20,8 @@ import javax.inject.Inject
 class FactActivityViewModel @Inject constructor(
     private val factUseCase: FactUseCase,
     private val favoriteUseCase: FavoriteUseCase,
-    private val saveDataUseCase: SaveDataUseCase
+    private val saveDataUseCase: SaveDataUseCase,
+    private val dispatchersProvider: DispatchersProvider
 ) : ViewModel() {
     private val _uiState = MutableStateFlow<FactUiState>(FactUiState.Initial)
     val uiState get() = _uiState
@@ -53,7 +54,7 @@ class FactActivityViewModel @Inject constructor(
     }
 
     private fun updateFact() {
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch(dispatchersProvider.io) {
             _uiState.tryEmit(FactUiState.Loading)
 
             factUseCase.getRandomCatFact().let {
@@ -73,7 +74,7 @@ class FactActivityViewModel @Inject constructor(
     }
 
     private fun addFactToFavorite() {
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch(dispatchersProvider.io) {
             if (isFavorite) {
                 favoriteUseCase.removeFavoriteFact(factContent)
                 _uiState.tryEmit(FactUiState.FavoriteFact(false))
@@ -88,7 +89,7 @@ class FactActivityViewModel @Inject constructor(
     }
 
     private fun restoreLastFact() {
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch(dispatchersProvider.io) {
             saveDataUseCase.getSavedFactData()?.let { (fact, isFavorite) ->
                 if (fact.fact.isEmpty()) {
                     updateFact()
@@ -102,7 +103,7 @@ class FactActivityViewModel @Inject constructor(
     }
 
     private fun checkFactFavorite() {
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch(dispatchersProvider.io) {
             favoriteUseCase.isFactFavorite(factContent).also {
                 isFavorite = it
                 _uiState.tryEmit(FactUiState.FavoriteFact(it))
@@ -111,7 +112,7 @@ class FactActivityViewModel @Inject constructor(
     }
 
     private fun saveLatestFact() {
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch(dispatchersProvider.io) {
             saveDataUseCase.saveFactData(factContent)
         }
     }

@@ -5,9 +5,11 @@ import io.mockk.Runs
 import io.mockk.clearMocks
 import io.mockk.coEvery
 import io.mockk.coVerify
+import io.mockk.every
 import io.mockk.just
 import io.mockk.mockk
 import jp.speakbuddy.factsearcher.data.network.FactNetworkModel
+import jp.speakbuddy.factsearcher.di.DispatchersProvider
 import jp.speakbuddy.factsearcher.ui.data.FactUiModel
 import jp.speakbuddy.factsearcher.domain.repository.DataStoreRepository
 import jp.speakbuddy.factsearcher.domain.repository.FactRepository
@@ -17,6 +19,7 @@ import jp.speakbuddy.factsearcher.domain.usecase.SaveDataUseCase
 import jp.speakbuddy.factsearcher.ui.eventstate.FactUiEvent
 import jp.speakbuddy.factsearcher.ui.eventstate.FactUiState
 import jp.speakbuddy.factsearcher.ui.viewmodel.FactActivityViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.test.runTest
 import org.junit.After
 import org.junit.Assert.*
@@ -27,6 +30,7 @@ class FactActivityViewModelTest {
 
     private val factRepository: FactRepository = mockk()
     private val dataStoreRepository: DataStoreRepository = mockk()
+    private val dispatchersProvider: DispatchersProvider = mockk()
 
     private lateinit var factUseCase: FactUseCase
     private lateinit var favoriteUseCase: FavoriteUseCase
@@ -36,12 +40,16 @@ class FactActivityViewModelTest {
 
     @Before
     fun setup() {
+        every { dispatchersProvider.io } returns Dispatchers.Unconfined
+        every { dispatchersProvider.main } returns Dispatchers.Unconfined
+        every { dispatchersProvider.default } returns Dispatchers.Unconfined
+
         factUseCase = FactUseCase(factRepository)
         favoriteUseCase = FavoriteUseCase(dataStoreRepository)
         saveDataUseCase = SaveDataUseCase(dataStoreRepository)
 
         viewModel = FactActivityViewModel(
-            factUseCase, favoriteUseCase, saveDataUseCase
+            factUseCase, favoriteUseCase, saveDataUseCase, dispatchersProvider
         )
     }
 
@@ -49,6 +57,7 @@ class FactActivityViewModelTest {
     fun cleanUp() {
         clearMocks(factRepository)
         clearMocks(dataStoreRepository)
+        clearMocks(dispatchersProvider)
     }
 
     @Test
@@ -62,7 +71,6 @@ class FactActivityViewModelTest {
             assertEquals(FactUiState.Initial, awaitItem())
 
             viewModel.onEvent(FactUiEvent.GetFact)
-            assertEquals(FactUiState.Loading, awaitItem())
 
             val successResult = awaitItem()
 
@@ -114,7 +122,7 @@ class FactActivityViewModelTest {
             viewModel.onEvent(FactUiEvent.GetFact)
             viewModel.onEvent(FactUiEvent.AddFactToFavorite)
 
-            skipItems(3)
+            skipItems(2)
             val newFavoriteState = awaitItem() as FactUiState.FavoriteFact
 
             assertTrue(newFavoriteState.isFavorite)
@@ -134,7 +142,7 @@ class FactActivityViewModelTest {
             viewModel.onEvent(FactUiEvent.GetFact)
             viewModel.onEvent(FactUiEvent.SaveFact)
 
-            skipItems(3)
+            skipItems(2)
             coVerify { dataStoreRepository.saveLatestFact(any()) }
             cancelAndIgnoreRemainingEvents()
         }

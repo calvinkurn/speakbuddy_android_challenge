@@ -4,14 +4,17 @@ import app.cash.turbine.test
 import io.mockk.Runs
 import io.mockk.clearMocks
 import io.mockk.coEvery
+import io.mockk.every
 import io.mockk.just
 import io.mockk.mockk
+import jp.speakbuddy.factsearcher.di.DispatchersProvider
 import jp.speakbuddy.factsearcher.ui.data.FactUiModel
 import jp.speakbuddy.factsearcher.domain.repository.DataStoreRepository
 import jp.speakbuddy.factsearcher.domain.usecase.FavoriteUseCase
 import jp.speakbuddy.factsearcher.ui.eventstate.FavoriteUiEvent
 import jp.speakbuddy.factsearcher.ui.eventstate.FavoriteUiState
 import jp.speakbuddy.factsearcher.ui.viewmodel.FavoriteActivityViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.test.runTest
 import org.junit.After
 import org.junit.Before
@@ -20,6 +23,7 @@ import org.junit.Assert.*
 
 class FavoriteActivityViewModelTest {
     private val dataStoreRepository: DataStoreRepository = mockk()
+    private val dispatchersProvider: DispatchersProvider = mockk()
 
     private lateinit var favoriteUseCase: FavoriteUseCase
 
@@ -27,16 +31,22 @@ class FavoriteActivityViewModelTest {
 
     @Before
     fun setup() {
+        every { dispatchersProvider.io } returns Dispatchers.Unconfined
+        every { dispatchersProvider.main } returns Dispatchers.Unconfined
+        every { dispatchersProvider.default } returns Dispatchers.Unconfined
+
         favoriteUseCase = FavoriteUseCase(dataStoreRepository)
 
         viewModel = FavoriteActivityViewModel(
-            favoriteUseCase = favoriteUseCase
+            favoriteUseCase = favoriteUseCase,
+            dispatchersProvider = dispatchersProvider
         )
     }
 
     @After
     fun cleanUp() {
         clearMocks(dataStoreRepository)
+        clearMocks(dispatchersProvider)
     }
 
     @Test
