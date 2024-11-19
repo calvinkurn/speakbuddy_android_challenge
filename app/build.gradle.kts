@@ -33,11 +33,11 @@ android {
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
 
             // using env variable to prepare if there is 2 services between development and production
-            buildConfigField("String", "BASE_URL", "\"https://catfact.ninja/fact\"")
+            buildConfigField("String", "BASE_URL", "\"https://catfact.ninja\"")
         }
         debug {
             isMinifyEnabled = false
-            buildConfigField("String", "BASE_URL", "\"https://catfact.ninja/fact\"")
+            buildConfigField("String", "BASE_URL", "\"https://catfact.ninja\"")
         }
     }
     compileOptions {
