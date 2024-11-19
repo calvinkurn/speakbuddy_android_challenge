@@ -18,6 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import jp.speakbuddy.factsearcher.R
@@ -68,4 +69,13 @@ fun ErrorPopup(
             }
         }
     }
+}
+
+@Preview
+@Composable
+private fun ErrorPopupPreview() {
+    ErrorPopup(
+        message = "Preview Title",
+        onDismiss = {}
+    )
 }
