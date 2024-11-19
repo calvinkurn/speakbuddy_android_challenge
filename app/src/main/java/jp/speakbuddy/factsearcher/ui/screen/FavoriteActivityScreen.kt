@@ -45,6 +45,7 @@ fun FavoriteActivityScreen(
                         FactWidget(
                             factData = it,
                             isLiked = true,
+                            isAllowedScrollAble = false,
                             onFavoriteClick = {
                                 onDislikeFact(it)
                             }

@@ -2,6 +2,7 @@ package jp.speakbuddy.factsearcher.ui.widget
 
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -33,6 +34,7 @@ import jp.speakbuddy.factsearcher.ui.theme.LocalCustomColorsPalette
 fun FactWidget(
     factData: FactUiModel,
     isLiked: Boolean,
+    isAllowedScrollAble: Boolean = true,
     onFavoriteClick: () -> Unit = {}
 ) {
     val scrollState = rememberScrollState()
@@ -43,9 +45,9 @@ fun FactWidget(
         )
     ) {
         Column(
-            modifier = Modifier
-                .padding(8.dp)
-                .verticalScroll(scrollState),
+            modifier = Modifier.padding(8.dp).let {
+                if (isAllowedScrollAble) it.verticalScroll(scrollState) else it
+            },
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(
                 alignment = Alignment.CenterVertically,
