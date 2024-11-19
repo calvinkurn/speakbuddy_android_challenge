@@ -34,6 +34,7 @@ class FactUseCase @Inject constructor(
         } catch (e: IOException) {
             FactResult.Failure(ErrorType.NoConnection)
         } catch (e: Exception) {
+            // we can add logger here to track unspecific error
             FactResult.Failure(ErrorType.UnknownError)
         }
     }
