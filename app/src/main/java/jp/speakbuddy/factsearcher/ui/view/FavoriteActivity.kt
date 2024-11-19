@@ -13,9 +13,11 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.lifecycleScope
 import dagger.hilt.android.AndroidEntryPoint
@@ -23,6 +25,7 @@ import jp.speakbuddy.factsearcher.R
 import jp.speakbuddy.factsearcher.ui.data.FactUiModel
 import jp.speakbuddy.factsearcher.ui.eventstate.FavoriteUiEvent
 import jp.speakbuddy.factsearcher.ui.eventstate.FavoriteUiState
+import jp.speakbuddy.factsearcher.ui.screen.FavoriteActivityScreen
 import jp.speakbuddy.factsearcher.ui.theme.FactTheme
 import jp.speakbuddy.factsearcher.ui.viewmodel.FavoriteActivityViewModel
 import jp.speakbuddy.factsearcher.ui.widget.FactWidget
@@ -42,35 +45,11 @@ class FavoriteActivity : ComponentActivity() {
             FactTheme(
                 dynamicColor = false
             ) {
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
-                ) {
-                    Column {
-                        HeaderWidget(
-                            title = stringResource(R.string.favorite_page_title),
-                            onBackClick = {
-                                onBack()
-                            }
-                        )
-
-                        LazyColumn {
-                            items(favoriteFactList) {
-                                Box(
-                                    modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 10.dp)
-                                ) {
-                                    FactWidget(
-                                        factData = it,
-                                        isLiked = true,
-                                        onFavoriteClick = {
-                                            dislikeFact(it)
-                                        }
-                                    )
-                                }
-                            }
-                        }
-                    }
-                }
+                FavoriteActivityScreen(
+                    favoriteFactList,
+                    onBack = { onBack() },
+                    onDislikeFact = { dislikeFact(it) }
+                )
             }
         }
 

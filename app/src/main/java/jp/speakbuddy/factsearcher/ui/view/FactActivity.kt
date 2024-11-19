@@ -17,11 +17,13 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
@@ -29,8 +31,10 @@ import androidx.lifecycle.lifecycleScope
 import dagger.hilt.android.AndroidEntryPoint
 import jp.speakbuddy.factsearcher.R
 import jp.speakbuddy.factsearcher.ui.data.DefaultFactUiModel
+import jp.speakbuddy.factsearcher.ui.data.FactUiModel
 import jp.speakbuddy.factsearcher.ui.eventstate.FactUiEvent
 import jp.speakbuddy.factsearcher.ui.eventstate.FactUiState
+import jp.speakbuddy.factsearcher.ui.screen.FactActivityScreen
 import jp.speakbuddy.factsearcher.ui.viewmodel.FactActivityViewModel
 import jp.speakbuddy.factsearcher.ui.theme.FactTheme
 import jp.speakbuddy.factsearcher.ui.theme.LocalCustomColorsPalette
@@ -56,68 +60,16 @@ class FactActivity : ComponentActivity() {
             FactTheme(
                 dynamicColor = false
             ) {
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
-                ) {
-                    Column {
-                        HeaderWidget(
-                            withBackButton = false,
-                            title = stringResource(R.string.fact_page_title)
-                        )
-
-                        Column(
-                            Modifier
-                                .weight(1f)
-                                .padding(16.dp),
-                            verticalArrangement = Arrangement.Center
-                        ) {
-                            FactWidget(
-                                factData = factData,
-                                isLiked = isFactFavorite,
-                                onFavoriteClick = { addFavoriteFact() }
-                            )
-                        }
-
-                        Row(
-                            Modifier.fillMaxWidth().padding(8.dp),
-                            horizontalArrangement = Arrangement.spacedBy(16.dp)
-                        ) {
-                            Button(
-                                modifier = Modifier.weight(1f),
-                                onClick = { navigateToFavoritePage() }
-                            ) {
-                                Text(stringResource(R.string.fact_page_button_favorite_label))
-                            }
-
-
-                            Button(
-                                modifier = Modifier.weight(1f),
-                                onClick = { updateFact() }
-                            ) {
-                                if (factIsLoading) {
-                                    CircularProgressIndicator(
-                                        color = LocalCustomColorsPalette.current.circularLoading,
-                                        trackColor = LocalCustomColorsPalette.current.circularLoadingTrail,
-                                        strokeWidth = 2.5.dp,
-                                        modifier = Modifier.size(16.dp)
-                                    )
-                                } else {
-                                    Text(
-                                        text = stringResource(R.string.fact_page_button_update_label),
-                                        fontSize = TextUnit(16f, TextUnitType.Sp)
-                                    )
-                                }
-                            }
-                        }
-                    }
-                }
-
-                if (errorMsg.isNotEmpty()) {
-                    ErrorPopup(errorMsg, onDismiss = {
-                        errorMsg = ""
-                    })
-                }
+                FactActivityScreen(
+                    factData = factData,
+                    isFactFavorite = isFactFavorite,
+                    isLoading = factIsLoading,
+                    errorMsg = errorMsg,
+                    onErrorDismiss = { errorMsg = "" },
+                    onUpdateFactClicked = { updateFact() },
+                    onNavigateToFavorite = { navigateToFavoritePage() },
+                    onFavoriteClicked = { addFavoriteFact() }
+                )
             }
         }
 
