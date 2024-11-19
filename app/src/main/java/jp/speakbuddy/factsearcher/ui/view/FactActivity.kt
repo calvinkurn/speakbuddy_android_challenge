@@ -66,7 +66,7 @@ class FactActivity : ComponentActivity() {
                     isLoading = factIsLoading,
                     errorMsg = errorMsg,
                     onErrorDismiss = { errorMsg = "" },
-                    onUpdateFactClicked = { updateFact() },
+                    onUpdateFactClicked = { if (!factIsLoading){ updateFact() } },
                     onNavigateToFavorite = { navigateToFavoritePage() },
                     onFavoriteClicked = { addFavoriteFact() }
                 )
