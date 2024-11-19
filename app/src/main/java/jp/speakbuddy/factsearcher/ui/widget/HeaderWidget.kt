@@ -35,12 +35,12 @@ fun HeaderWidget(
         modifier = modifier
             .fillMaxWidth()
             .background(MaterialTheme.colorScheme.primary)
-            .padding(6.dp)
+            .padding(8.dp)
             .height(40.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         if (withBackButton) {
-            IconButton(onClick = onBackClick, modifier = Modifier.size(24.dp)) {
+            IconButton(onClick = onBackClick, modifier = Modifier.size(height = 24.dp, width = 32.dp).padding(end = 8.dp)) {
                 Icon(
                     modifier = Modifier.size(24.dp),
                     imageVector = Icons.AutoMirrored.Filled.ArrowBack,
@@ -51,7 +51,6 @@ fun HeaderWidget(
         }
 
         Text(
-            modifier = Modifier.padding(top = 8.dp),
             text = title,
             style = MaterialTheme.typography.titleMedium,
             color = MaterialTheme.colorScheme.onPrimary
