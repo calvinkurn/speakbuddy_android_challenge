@@ -7,9 +7,11 @@ import retrofit2.Retrofit
 
 class RetrofitProvider {
     companion object {
+        private const val BASE_URL = "https://catfact.ninja"
+
         fun getInstance(): ApiServices {
             return Retrofit.Builder()
-                .baseUrl("https://catfact.ninja")
+                .baseUrl(BASE_URL)
                 .addConverterFactory(Json.asConverterFactory("application/json".toMediaType()))
                 .build()
                 .create(ApiServices::class.java)

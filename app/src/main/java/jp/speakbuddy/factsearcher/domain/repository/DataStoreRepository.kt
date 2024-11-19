@@ -28,8 +28,8 @@ interface DataStoreRepository {
 class DataStoreRepositoryImpl @Inject constructor(
     @ApplicationContext context: Context
 ) : DataStoreRepository {
-    private val favoriteDataKey = stringPreferencesKey("favorite_fact_list")
-    private val latestDataKey = stringPreferencesKey("latest_fact")
+    private val favoriteDataKey = stringPreferencesKey(FAVORITE_KEY)
+    private val latestDataKey = stringPreferencesKey(LAST_DATA_KEY)
     private val dataStore = context.dataStore
 
     override suspend fun addFavoriteFact(newData: FactUiModel) {
@@ -81,6 +81,9 @@ class DataStoreRepositoryImpl @Inject constructor(
 
     companion object {
         private const val PREFERENCE_NAME = "fact_storage_data"
+        private const val FAVORITE_KEY = "favorite_fact_list"
+        private const val LAST_DATA_KEY = "latest_fact"
+
         val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = PREFERENCE_NAME)
     }
 }
