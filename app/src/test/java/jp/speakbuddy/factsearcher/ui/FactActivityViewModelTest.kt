@@ -8,7 +8,7 @@ import io.mockk.coVerify
 import io.mockk.just
 import io.mockk.mockk
 import jp.speakbuddy.factsearcher.data.network.FactNetworkModel
-import jp.speakbuddy.factsearcher.data.ui.FactUiModel
+import jp.speakbuddy.factsearcher.ui.data.FactUiModel
 import jp.speakbuddy.factsearcher.domain.repository.DataStoreRepository
 import jp.speakbuddy.factsearcher.domain.repository.FactRepository
 import jp.speakbuddy.factsearcher.domain.usecase.FactUseCase
@@ -17,12 +17,7 @@ import jp.speakbuddy.factsearcher.domain.usecase.SaveDataUseCase
 import jp.speakbuddy.factsearcher.ui.eventstate.FactUiEvent
 import jp.speakbuddy.factsearcher.ui.eventstate.FactUiState
 import jp.speakbuddy.factsearcher.ui.viewmodel.FactActivityViewModel
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.StandardTestDispatcher
-import kotlinx.coroutines.test.TestCoroutineScheduler
 import kotlinx.coroutines.test.runTest
-import kotlinx.coroutines.test.setMain
 import org.junit.After
 import org.junit.Assert.*
 import org.junit.Before

@@ -3,7 +3,7 @@ package jp.speakbuddy.factsearcher.ui.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import jp.speakbuddy.factsearcher.data.ui.DefaultFactUiModel
+import jp.speakbuddy.factsearcher.ui.data.DefaultFactUiModel
 import jp.speakbuddy.factsearcher.domain.error.getErrorMessage
 import jp.speakbuddy.factsearcher.domain.usecase.FactUseCase
 import jp.speakbuddy.factsearcher.domain.usecase.FavoriteUseCase

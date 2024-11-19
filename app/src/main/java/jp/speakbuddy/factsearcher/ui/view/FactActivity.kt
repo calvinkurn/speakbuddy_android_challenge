@@ -28,7 +28,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.lifecycleScope
 import dagger.hilt.android.AndroidEntryPoint
 import jp.speakbuddy.factsearcher.R
-import jp.speakbuddy.factsearcher.data.ui.DefaultFactUiModel
+import jp.speakbuddy.factsearcher.ui.data.DefaultFactUiModel
 import jp.speakbuddy.factsearcher.ui.eventstate.FactUiEvent
 import jp.speakbuddy.factsearcher.ui.eventstate.FactUiState
 import jp.speakbuddy.factsearcher.ui.viewmodel.FactActivityViewModel

@@ -1,4 +1,4 @@
-package jp.speakbuddy.factsearcher.data.ui
+package jp.speakbuddy.factsearcher.ui.data
 
 import kotlinx.serialization.Serializable
 

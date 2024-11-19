@@ -1,6 +1,6 @@
 package jp.speakbuddy.factsearcher.domain.usecase.utils
 
-import jp.speakbuddy.factsearcher.data.ui.FactUiModel
+import jp.speakbuddy.factsearcher.ui.data.FactUiModel
 import jp.speakbuddy.factsearcher.domain.error.ErrorType
 
 sealed class FactResult<out T> {

@@ -20,7 +20,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.lifecycleScope
 import dagger.hilt.android.AndroidEntryPoint
 import jp.speakbuddy.factsearcher.R
-import jp.speakbuddy.factsearcher.data.ui.FactUiModel
+import jp.speakbuddy.factsearcher.ui.data.FactUiModel
 import jp.speakbuddy.factsearcher.ui.eventstate.FavoriteUiEvent
 import jp.speakbuddy.factsearcher.ui.eventstate.FavoriteUiState
 import jp.speakbuddy.factsearcher.ui.theme.FactTheme

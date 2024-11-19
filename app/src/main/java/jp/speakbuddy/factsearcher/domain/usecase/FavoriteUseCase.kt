@@ -1,6 +1,6 @@
 package jp.speakbuddy.factsearcher.domain.usecase
 
-import jp.speakbuddy.factsearcher.data.ui.FactUiModel
+import jp.speakbuddy.factsearcher.ui.data.FactUiModel
 import jp.speakbuddy.factsearcher.domain.repository.DataStoreRepository
 import kotlinx.coroutines.runBlocking
 import javax.inject.Inject

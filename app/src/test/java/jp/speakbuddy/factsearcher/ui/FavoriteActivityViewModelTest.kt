@@ -6,7 +6,7 @@ import io.mockk.clearMocks
 import io.mockk.coEvery
 import io.mockk.just
 import io.mockk.mockk
-import jp.speakbuddy.factsearcher.data.ui.FactUiModel
+import jp.speakbuddy.factsearcher.ui.data.FactUiModel
 import jp.speakbuddy.factsearcher.domain.repository.DataStoreRepository
 import jp.speakbuddy.factsearcher.domain.usecase.FavoriteUseCase
 import jp.speakbuddy.factsearcher.ui.eventstate.FavoriteUiEvent
