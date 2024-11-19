@@ -29,8 +29,15 @@ android {
 
     buildTypes {
         release {
-            isMinifyEnabled = false
+            isMinifyEnabled = true
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+
+            // using env variable to prepare if there is 2 services between development and production
+            buildConfigField("String", "BASE_URL", "\"https://catfact.ninja/fact\"")
+        }
+        debug {
+            isMinifyEnabled = false
+            buildConfigField("String", "BASE_URL", "\"https://catfact.ninja/fact\"")
         }
     }
     compileOptions {
@@ -42,6 +49,7 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
     packagingOptions {
         resources {
