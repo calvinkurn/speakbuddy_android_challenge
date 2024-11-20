@@ -6,6 +6,8 @@ plugins {
     alias(libs.plugins.google.protobuf)
     alias(libs.plugins.kotlin.compose)
     kotlin("kapt")
+
+    jacoco
 }
 
 android {
@@ -36,22 +38,35 @@ android {
         debug {
             isMinifyEnabled = false
             buildConfigField("String", "BASE_URL", "\"https://catfact.ninja\"")
+
+            enableAndroidTestCoverage = true
+            enableUnitTestCoverage = true
         }
     }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
+
     kotlinOptions {
         jvmTarget = "17"
     }
+
     buildFeatures {
         compose = true
         buildConfig = true
     }
-    packagingOptions {
+
+    packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
+        }
+    }
+
+    testOptions {
+        unitTests {
+            isIncludeAndroidResources = true // Include resources for unit tests
         }
     }
 }
@@ -111,4 +126,30 @@ dependencies {
 
 kapt {
     correctErrorTypes = true
+}
+
+tasks.register<JacocoReport>("jacocoTestReport") {
+    dependsOn("testDebugUnitTest")
+
+    reports {
+        xml.required.set(true)
+        html.required.set(true)
+    }
+
+    val fileFilter = listOf("**/R.class", "**/R$*.class", "**/BuildConfig.*",
+        "**/Manifest*.*", "**/*Test*.*", "android/**/*.*")
+
+    val debugTree = fileTree("${layout.buildDirectory}/intermediates/javac/debug") { exclude(fileFilter) }
+    val kotlinDebugTree = fileTree("${layout.buildDirectory}/tmp/kotlin-classes/debug") { exclude(fileFilter) }
+
+    sourceDirectories.setFrom(files("src/main/java", "src/main/kotlin"))
+    classDirectories.setFrom(files(debugTree, kotlinDebugTree))
+    executionData.setFrom(fileTree("${layout.buildDirectory}") { include("jacoco/testDebugUnitTest.exec") })
+}
+
+tasks.register("generateCodeCoverageReport") {
+    group = "verification"
+    description = "Runs unit tests and generates the JaCoCo code coverage report."
+
+    dependsOn("testDebugUnitTest", "jacocoTestReport")
 }
