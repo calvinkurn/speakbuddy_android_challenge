@@ -20,6 +20,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -27,6 +28,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import jp.speakbuddy.factsearcher.R
 import java.util.Locale
+
+const val LANGUAGE_WIDGET_ICON = "LANGUAGE_WIDGET_ICON"
+const val LANGUAGE_WIDGET_ITEM_JP = "LANGUAGE_WIDGET_ITEM_JP"
 
 @Composable
 fun LanguageWidget(
@@ -53,7 +57,10 @@ fun LanguageWidget(
             contentDescription = "Language Icon",
             modifier = Modifier
                 .size(24.dp)
-                .clickable { isDropdownExpanded = true },
+                .testTag(LANGUAGE_WIDGET_ICON)
+                .clickable {
+                    isDropdownExpanded = true
+                },
             tint = Color.Unspecified
         )
 
@@ -67,6 +74,13 @@ fun LanguageWidget(
         ) {
             locales.forEach { locale ->
                 DropdownMenuItem(
+                    modifier = Modifier.let {
+                        if (locale == Locale.JAPAN) {
+                            it.testTag(LANGUAGE_WIDGET_ITEM_JP)
+                        } else {
+                            it
+                        }
+                    },
                     onClick = {
                         isDropdownExpanded = false
                         onLocaleSelected(locale)
