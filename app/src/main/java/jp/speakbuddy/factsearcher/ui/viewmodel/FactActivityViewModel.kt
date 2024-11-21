@@ -84,19 +84,23 @@ class FactActivityViewModel @Inject constructor(
             }
 
             isFavorite = isFavorite.not()
-            saveDataUseCase.saveFactData(factContent)
         }
     }
 
     private fun restoreLastFact() {
-        viewModelScope.launch(dispatchersProvider.io) {
-            saveDataUseCase.getSavedFactData().let { (fact, isFavorite) ->
-                if (fact.fact.isEmpty()) {
-                    updateFact()
-                } else {
-                    factContent = fact
-                    _uiState.tryEmit(FactUiState.Success(fact, isFavorite))
-                    this@FactActivityViewModel.isFavorite = isFavorite
+        if (factContent.fact != DefaultFactUiModel.fact) {
+            // on configuration change
+            _uiState.tryEmit(FactUiState.Success(factContent, isFavorite))
+        } else {
+            viewModelScope.launch(dispatchersProvider.io) {
+                saveDataUseCase.getSavedFactData().let { (fact, isFavorite) ->
+                    if (fact.fact.isEmpty()) {
+                        updateFact()
+                    } else {
+                        factContent = fact
+                        _uiState.tryEmit(FactUiState.Success(fact, isFavorite))
+                        this@FactActivityViewModel.isFavorite = isFavorite
+                    }
                 }
             }
         }
