@@ -27,6 +27,7 @@ import jp.speakbuddy.factsearcher.ui.theme.LocalCustomColorsPalette
 import jp.speakbuddy.factsearcher.ui.widget.ErrorPopup
 import jp.speakbuddy.factsearcher.ui.widget.FactWidget
 import jp.speakbuddy.factsearcher.ui.widget.HeaderWidget
+import java.util.Locale
 
 const val FACT_SCREEN_FAVORITE_BUTTON_TAG = "FACT_SCREEN_FAVORITE_BUTTON_TAG"
 const val FACT_SCREEN_UPDATE_FACT_BUTTON_TAG = "FACT_SCREEN_UPDATE_FACT_BUTTON_TAG"
@@ -41,6 +42,7 @@ fun FactActivityScreen(
     onFavoriteClicked: () -> Unit,
     onNavigateToFavorite: () -> Unit,
     onUpdateFactClicked: () -> Unit,
+    onLocaleSelected: (Locale) -> Unit
 ) {
     Surface(
         modifier = Modifier.fillMaxSize(),
@@ -49,7 +51,10 @@ fun FactActivityScreen(
         Column {
             HeaderWidget(
                 withBackButton = false,
-                title = stringResource(R.string.fact_page_title)
+                title = stringResource(R.string.fact_page_title),
+                onLocaleSelected = {
+                    onLocaleSelected(it)
+                }
             )
 
             Column(
@@ -122,6 +127,7 @@ private fun FactActivityScreenPreview() {
         onErrorDismiss = {},
         onUpdateFactClicked = {},
         onNavigateToFavorite = {},
-        onFavoriteClicked = {}
+        onFavoriteClicked = {},
+        onLocaleSelected = {}
     )
 }
