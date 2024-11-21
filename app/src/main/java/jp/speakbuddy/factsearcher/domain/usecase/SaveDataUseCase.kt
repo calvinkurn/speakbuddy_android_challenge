@@ -12,11 +12,18 @@ class SaveDataUseCase @Inject constructor(
     }
 
     // return latest fact & favorite status
-    suspend fun getSavedFactData(): Pair<FactUiModel, Boolean>? {
+    suspend fun getSavedFactData(): Pair<FactUiModel, Boolean> {
         val data = dataStoreRepository.getSavedLatestFact()
         return data?.let {
             val isFavorite = dataStoreRepository.isFactFavorite(it)
             Pair(it, isFavorite)
+        } ?: run {
+            Pair(FactUiModel(
+                fact = "",
+                factId = 0L,
+                length = 0,
+                isContainsCat = false
+            ), false)
         }
     }
 }

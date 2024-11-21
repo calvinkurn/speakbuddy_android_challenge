@@ -90,7 +90,7 @@ class FactActivityViewModel @Inject constructor(
 
     private fun restoreLastFact() {
         viewModelScope.launch(dispatchersProvider.io) {
-            saveDataUseCase.getSavedFactData()?.let { (fact, isFavorite) ->
+            saveDataUseCase.getSavedFactData().let { (fact, isFavorite) ->
                 if (fact.fact.isEmpty()) {
                     updateFact()
                 } else {
