@@ -21,7 +21,7 @@ android {
         versionCode = 1
         versionName = "0.0.1"
 
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner = "jp.speakbuddy.factsearcher.di.CustomTestRunner"
         vectorDrawables {
             useSupportLibrary = true
         }
@@ -108,7 +108,6 @@ dependencies {
     implementation(libs.protobuf.kotlin.lite)
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.retrofit2.kotlinx.serialization.converter)
-
     implementation(libs.okhttp)
     implementation(libs.retrofit)
 
@@ -120,6 +119,9 @@ dependencies {
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(libs.androidx.ui.test.junit4)
+    androidTestImplementation(libs.androidx.rules)
+    androidTestImplementation(libs.hilt.android.testing)
+
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
 }

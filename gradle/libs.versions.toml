@@ -4,6 +4,7 @@ coreKtx = "1.13.1"
 datastorePreferences = "1.1.1"
 espressoCore = "3.6.1"
 hiltAndroid = "2.51"
+hiltAndroidTesting = "2.51"
 junit = "4.13.2"
 junitVersion = "1.2.1"
 kotlinxCoroutinesTest = "1.7.3"
@@ -15,6 +16,7 @@ okhttp = "4.12.0"
 protobufKotlinLite = "3.25.2"
 retrofit = "2.9.0"
 retrofit2KotlinxSerializationConverter = "1.0.0"
+rules = "1.6.1"
 turbine = "1.0.0"
 ui = "1.7.5"
 agp = "8.4.2"
@@ -31,6 +33,7 @@ androidx-espresso-core = { module = "androidx.test.espresso:espresso-core", vers
 androidx-junit = { module = "androidx.test.ext:junit", version.ref = "junitVersion" }
 androidx-lifecycle-runtime-ktx = { module = "androidx.lifecycle:lifecycle-runtime-ktx", version.ref = "lifecycleRuntimeKtx" }
 androidx-material3 = { module = "androidx.compose.material3:material3", version.ref = "material3" }
+androidx-rules = { module = "androidx.test:rules", version.ref = "rules" }
 androidx-ui = { module = "androidx.compose.ui:ui", version.ref = "ui" }
 androidx-ui-test-junit4 = { module = "androidx.compose.ui:ui-test-junit4", version.ref = "ui" }
 androidx-ui-test-manifest = { module = "androidx.compose.ui:ui-test-manifest", version.ref = "ui" }
@@ -38,6 +41,7 @@ androidx-ui-tooling = { module = "androidx.compose.ui:ui-tooling", version.ref =
 androidx-ui-tooling-preview = { module = "androidx.compose.ui:ui-tooling-preview", version.ref = "ui" }
 hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hiltAndroid" }
 hilt-android-compiler = { module = "com.google.dagger:hilt-android-compiler", version.ref = "hiltAndroid" }
+hilt-android-testing = { module = "com.google.dagger:hilt-android-testing", version.ref = "hiltAndroidTesting" }
 junit = { module = "junit:junit", version.ref = "junit" }
 kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlinxCoroutinesTest" }
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinxSerializationJson" }
