@@ -71,7 +71,7 @@ fun FactWidget(
                 AnimatedContent(
                     modifier = Modifier.align(Alignment.CenterEnd),
                     targetState = isLiked,
-                    label = "Like Animation"
+                    label = stringResource(R.string.like_animation_content_description)
                 ) {
                     // use tint color for dark mode adjustment color
                     var color = LocalCustomColorsPalette.current.favoriteOutline
@@ -90,7 +90,7 @@ fun FactWidget(
                             }
                             .testTag(FACT_WIDGET_LIKE_BUTTON),
                         painter = painter,
-                        contentDescription = "Favorite Icon",
+                        contentDescription = stringResource(R.string.favorite_icon_content_description),
                         tint = color
                     )
                 }
@@ -117,7 +117,7 @@ fun FactWidget(
                     )
                     if (factData.length > 100) {
                         Text(
-                            text = "Content length: ${factData.length} character",
+                            text = String.format(stringResource(R.string.fact_content_length), factData.length),
                             style = MaterialTheme.typography.bodyLarge,
                             textAlign = TextAlign.Center
                         )
