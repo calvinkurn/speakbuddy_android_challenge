@@ -14,6 +14,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.TextUnit
@@ -26,6 +27,9 @@ import jp.speakbuddy.factsearcher.ui.theme.LocalCustomColorsPalette
 import jp.speakbuddy.factsearcher.ui.widget.ErrorPopup
 import jp.speakbuddy.factsearcher.ui.widget.FactWidget
 import jp.speakbuddy.factsearcher.ui.widget.HeaderWidget
+
+const val FACT_SCREEN_FAVORITE_BUTTON_TAG = "FACT_SCREEN_FAVORITE_BUTTON_TAG"
+const val FACT_SCREEN_UPDATE_FACT_BUTTON_TAG = "FACT_SCREEN_UPDATE_FACT_BUTTON_TAG"
 
 @Composable
 fun FactActivityScreen(
@@ -66,7 +70,7 @@ fun FactActivityScreen(
                 horizontalArrangement = Arrangement.spacedBy(16.dp)
             ) {
                 Button(
-                    modifier = Modifier.weight(1f),
+                    modifier = Modifier.weight(1f).testTag(FACT_SCREEN_FAVORITE_BUTTON_TAG),
                     onClick = { onNavigateToFavorite() }
                 ) {
                     Text(stringResource(R.string.fact_page_button_favorite_label))
@@ -74,7 +78,7 @@ fun FactActivityScreen(
 
 
                 Button(
-                    modifier = Modifier.weight(1f),
+                    modifier = Modifier.weight(1f).testTag(FACT_SCREEN_UPDATE_FACT_BUTTON_TAG),
                     onClick = { onUpdateFactClicked() }
                 ) {
                     if (isLoading) {
