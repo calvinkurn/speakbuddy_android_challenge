@@ -9,11 +9,13 @@ import jp.speakbuddy.factsearcher.domain.error.getErrorMessage
 import jp.speakbuddy.factsearcher.domain.usecase.FactUseCase
 import jp.speakbuddy.factsearcher.domain.usecase.FavoriteUseCase
 import jp.speakbuddy.factsearcher.domain.usecase.SaveDataUseCase
+import jp.speakbuddy.factsearcher.domain.usecase.UserPreferencesUseCase
 import jp.speakbuddy.factsearcher.domain.usecase.utils.FactResult
 import jp.speakbuddy.factsearcher.ui.eventstate.FactUiEvent
 import jp.speakbuddy.factsearcher.ui.eventstate.FactUiState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
+import java.util.Locale
 import javax.inject.Inject
 
 @HiltViewModel
@@ -21,7 +23,8 @@ class FactActivityViewModel @Inject constructor(
     private val factUseCase: FactUseCase,
     private val favoriteUseCase: FavoriteUseCase,
     private val saveDataUseCase: SaveDataUseCase,
-    private val dispatchersProvider: DispatchersProvider
+    private val dispatchersProvider: DispatchersProvider,
+    private val userPreferencesUseCase: UserPreferencesUseCase
 ) : ViewModel() {
     private val _uiState = MutableStateFlow<FactUiState>(FactUiState.Initial)
     val uiState get() = _uiState
@@ -29,26 +32,29 @@ class FactActivityViewModel @Inject constructor(
     private var factContent = DefaultFactUiModel
     private var isFavorite = false
 
+    fun getLanguagePreference(): Locale {
+        return userPreferencesUseCase.getLanguagePreference()
+    }
+
     fun onEvent(event: FactUiEvent) {
         when (event) {
             is FactUiEvent.GetFact -> {
                 updateFact()
             }
-
             is FactUiEvent.CheckFavorite -> {
                 checkFactFavorite()
             }
-
             is FactUiEvent.AddFactToFavorite -> {
                 addFactToFavorite()
             }
-
             is FactUiEvent.RestoreSavedFact -> {
                 restoreLastFact()
             }
-
             is FactUiEvent.SaveFact -> {
                 saveLatestFact()
+            }
+            is FactUiEvent.UpdatePreferenceLanguage -> {
+                updateLanguage(event.locale)
             }
         }
     }
@@ -95,6 +101,7 @@ class FactActivityViewModel @Inject constructor(
             viewModelScope.launch(dispatchersProvider.io) {
                 saveDataUseCase.getSavedFactData().let { (fact, isFavorite) ->
                     if (fact.fact.isEmpty()) {
+                        // TODO: implement loading state
                         updateFact()
                     } else {
                         factContent = fact
@@ -118,6 +125,12 @@ class FactActivityViewModel @Inject constructor(
     private fun saveLatestFact() {
         viewModelScope.launch(dispatchersProvider.io) {
             saveDataUseCase.saveFactData(factContent)
+        }
+    }
+
+    private fun updateLanguage(locale: Locale) {
+        viewModelScope.launch(dispatchersProvider.io) {
+            userPreferencesUseCase.updateLanguagePreference(locale)
         }
     }
 }

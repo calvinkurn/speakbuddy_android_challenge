@@ -29,8 +29,20 @@ class FactActivity : ComponentActivity() {
     private var isFactFavorite by mutableStateOf(false)
     private var errorMsg by mutableStateOf("")
 
+    private var isRecreate = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        if (savedInstanceState == null) {
+            // can be adjust between waiting on splash screen / waiting on home page to implement preference
+            // waiting on splash screen to avoid re-create
+            viewModel.getLanguagePreference().let {
+                if (this.resources.configuration.locales[0] != it) {
+                    updateLocale(it, false)
+                }
+            }
+        }
 
         setContent {
             FactTheme(
@@ -61,7 +73,9 @@ class FactActivity : ComponentActivity() {
 
     override fun onPause() {
         super.onPause()
-        viewModel.onEvent(FactUiEvent.SaveFact)
+        if (!isRecreate) {
+            viewModel.onEvent(FactUiEvent.SaveFact)
+        }
     }
 
     private fun getLastFact() {
@@ -81,13 +95,18 @@ class FactActivity : ComponentActivity() {
         startActivity(intent)
     }
 
-    private fun updateLocale(locale: Locale){
+    private fun updateLocale(locale: Locale, updatePreference: Boolean = true){
         val config = this.resources.configuration.apply {
             setLocale(locale)
         }
 
         this.resources.updateConfiguration(config, this.resources.displayMetrics)
-        this.recreate()
+
+        if (updatePreference) {
+            viewModel.onEvent(FactUiEvent.UpdatePreferenceLanguage(locale))
+            isRecreate = true
+            this.recreate()
+        }
     }
 
     private fun observe() {
