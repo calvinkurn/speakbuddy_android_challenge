@@ -99,9 +99,10 @@ class FactActivityViewModel @Inject constructor(
             _uiState.tryEmit(FactUiState.Success(factContent, isFavorite))
         } else {
             viewModelScope.launch(dispatchersProvider.io) {
+                _uiState.tryEmit(FactUiState.Loading)
+
                 saveDataUseCase.getSavedFactData().let { (fact, isFavorite) ->
                     if (fact.fact.isEmpty()) {
-                        // TODO: implement loading state
                         updateFact()
                     } else {
                         factContent = fact
@@ -115,9 +116,11 @@ class FactActivityViewModel @Inject constructor(
 
     private fun checkFactFavorite() {
         viewModelScope.launch(dispatchersProvider.io) {
-            favoriteUseCase.isFactFavorite(factContent).also {
-                isFavorite = it
-                _uiState.tryEmit(FactUiState.FavoriteFact(it))
+            if (factContent != DefaultFactUiModel) {
+                favoriteUseCase.isFactFavorite(factContent).also {
+                    isFavorite = it
+                    _uiState.tryEmit(FactUiState.FavoriteFact(it))
+                }
             }
         }
     }

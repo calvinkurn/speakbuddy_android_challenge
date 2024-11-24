@@ -98,7 +98,9 @@ fun FactWidget(
 
             Text(
                 modifier = Modifier.testTag(FACT_WIDGET_CONTENT_TAG),
-                text = factData.fact,
+                text = factData.fact.let {
+                    it.ifEmpty { "-" }
+                },
                 style = MaterialTheme.typography.bodyLarge,
                 textAlign = TextAlign.Center
             )

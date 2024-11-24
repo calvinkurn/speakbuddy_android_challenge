@@ -112,7 +112,6 @@ class FactActivity : ComponentActivity() {
     private fun observe() {
         lifecycleScope.launch {
             viewModel.uiState.collectLatest {
-                factIsLoading = false
                 when(it) {
                     is FactUiState.Loading -> {
                         factIsLoading = true
@@ -120,12 +119,14 @@ class FactActivity : ComponentActivity() {
                     is FactUiState.Success -> {
                         factData = it.data
                         isFactFavorite = it.isFavorite
+                        factIsLoading = false
                     }
                     is FactUiState.FavoriteFact -> {
                         isFactFavorite = it.isFavorite
                     }
                     is FactUiState.Error -> {
                         errorMsg = it.errorMsg
+                        factIsLoading = false
                     }
                     else -> {}
                 }
