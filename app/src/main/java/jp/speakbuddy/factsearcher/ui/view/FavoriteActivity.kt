@@ -15,6 +15,7 @@ import jp.speakbuddy.factsearcher.ui.theme.FactTheme
 import jp.speakbuddy.factsearcher.ui.viewmodel.FavoriteActivityViewModel
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import java.util.Locale
 
 @AndroidEntryPoint
 class FavoriteActivity : ComponentActivity() {
@@ -31,7 +32,8 @@ class FavoriteActivity : ComponentActivity() {
                 FavoriteActivityScreen(
                     favoriteFactList,
                     onBack = { onBack() },
-                    onDislikeFact = { dislikeFact(it) }
+                    onDislikeFact = { dislikeFact(it) },
+                    onLocaleSelected = { updateLocale(it) }
                 )
             }
         }
@@ -64,5 +66,16 @@ class FavoriteActivity : ComponentActivity() {
 
     private fun onBack() {
         this.finish()
+    }
+
+    private fun updateLocale(locale: Locale){
+        val config = this.resources.configuration.apply {
+            setLocale(locale)
+        }
+
+        this.resources.updateConfiguration(config, this.resources.displayMetrics)
+
+        viewModel.onEvent(FavoriteUiEvent.UpdatePreferenceLanguage(locale))
+        this.recreate()
     }
 }

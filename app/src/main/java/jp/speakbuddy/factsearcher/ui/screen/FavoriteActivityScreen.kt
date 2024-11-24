@@ -18,12 +18,14 @@ import jp.speakbuddy.factsearcher.R
 import jp.speakbuddy.factsearcher.ui.data.FactUiModel
 import jp.speakbuddy.factsearcher.ui.widget.FactWidget
 import jp.speakbuddy.factsearcher.ui.widget.HeaderWidget
+import java.util.Locale
 
 @Composable
 fun FavoriteActivityScreen(
     favoriteFactList: List<FactUiModel>,
     onBack: () -> Unit,
-    onDislikeFact: (fact: FactUiModel) -> Unit
+    onDislikeFact: (fact: FactUiModel) -> Unit,
+    onLocaleSelected: (locale: Locale) -> Unit
 ) {
     Surface(
         modifier = Modifier.fillMaxSize(),
@@ -32,9 +34,8 @@ fun FavoriteActivityScreen(
         Column {
             HeaderWidget(
                 title = stringResource(R.string.favorite_page_title),
-                onBackClick = {
-                    onBack()
-                }
+                onBackClick = { onBack() },
+                onLocaleSelected = { onLocaleSelected(it) }
             )
 
             LazyColumn {
@@ -72,6 +73,7 @@ private fun FavoriteActivityScreenPreview() {
     FavoriteActivityScreen(
         favoriteFactList = favoriteList,
         onBack = {},
-        onDislikeFact = {}
+        onDislikeFact = {},
+        onLocaleSelected = {}
     )
 }

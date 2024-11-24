@@ -6,17 +6,19 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import jp.speakbuddy.factsearcher.di.DispatchersProvider
 import jp.speakbuddy.factsearcher.ui.data.FactUiModel
 import jp.speakbuddy.factsearcher.domain.usecase.FavoriteUseCase
+import jp.speakbuddy.factsearcher.domain.usecase.UserPreferencesUseCase
 import jp.speakbuddy.factsearcher.ui.eventstate.FavoriteUiEvent
 import jp.speakbuddy.factsearcher.ui.eventstate.FavoriteUiState
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
+import java.util.Locale
 import javax.inject.Inject
 
 @HiltViewModel
 class FavoriteActivityViewModel @Inject constructor(
     private val favoriteUseCase: FavoriteUseCase,
-    private val dispatchersProvider: DispatchersProvider
+    private val dispatchersProvider: DispatchersProvider,
+    private val userPreferencesUseCase: UserPreferencesUseCase
 ): ViewModel() {
     private val _uiState = MutableStateFlow<FavoriteUiState>(FavoriteUiState.Initial)
     val uiState get() = _uiState
@@ -28,6 +30,9 @@ class FavoriteActivityViewModel @Inject constructor(
             }
             is FavoriteUiEvent.DislikeFact -> {
                dislikeFact(event.fact)
+            }
+            is FavoriteUiEvent.UpdatePreferenceLanguage -> {
+                updateLanguage(event.locale)
             }
         }
     }
@@ -45,6 +50,12 @@ class FavoriteActivityViewModel @Inject constructor(
             favoriteUseCase.removeAndReturnFavoriteFact(targetFact).also {
                 _uiState.tryEmit(FavoriteUiState.Success(it))
             }
+        }
+    }
+
+    private fun updateLanguage(locale: Locale) {
+        viewModelScope.launch(dispatchersProvider.io) {
+            userPreferencesUseCase.updateLanguagePreference(locale)
         }
     }
 }
