@@ -4,7 +4,7 @@ import jp.speakbuddy.factsearcher.domain.repository.UserPreferenceRepository
 import java.util.Locale
 
 class TestUserPreferencesRepository: UserPreferenceRepository {
-    override suspend fun getUserPreferenceLanguage(): Locale {
+    override fun getUserPreferenceLanguage(): Locale {
         return Locale.US
     }
 
