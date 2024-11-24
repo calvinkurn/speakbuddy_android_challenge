@@ -137,6 +137,39 @@ class TestActivity {
         }
     }
 
+    // test change language to jp on favorite page
+    @Test
+    fun testFavoritePageLanguage() {
+        launchActivity {
+            composeTestRule.onNodeWithTag(FACT_WIDGET_TAG).assertIsDisplayed()
+
+            val node = composeTestRule.onNodeWithTag(FACT_WIDGET_CONTENT_TAG).fetchSemanticsNode()
+            val text = node.config.getOrNull(SemanticsProperties.Text)
+            assertTrue(!text.isNullOrEmpty())
+
+            composeTestRule.onNodeWithTag(FACT_WIDGET_LIKE_BUTTON).performClick()
+            composeTestRule.onNodeWithTag(FACT_SCREEN_FAVORITE_BUTTON_TAG).performClick()
+
+            val node2 = composeTestRule.onNodeWithTag(FACT_WIDGET_CONTENT_TAG).fetchSemanticsNode()
+            val text2 = node2.config.getOrNull(SemanticsProperties.Text)
+            assertTrue(!text.isNullOrEmpty())
+
+            composeTestRule.onNodeWithTag(FACT_WIDGET_TAG).assertIsDisplayed()
+            assertEquals(text2, text)
+
+            composeTestRule.onNodeWithTag(LANGUAGE_WIDGET_ICON).performClick()
+            composeTestRule.waitForIdle()
+            composeTestRule.onNodeWithTag(LANGUAGE_WIDGET_ITEM_JP).performClick()
+            composeTestRule.waitForIdle()
+
+            val appContext = InstrumentationRegistry.getInstrumentation().targetContext
+            val localizedContext = appContext.setLocale(Locale.JAPAN)
+            val pageTitle = localizedContext.getLocalizedString(R.string.fact_page_title)
+
+            composeTestRule.onNodeWithText(pageTitle).isDisplayed()
+        }
+    }
+
     private fun launchActivity(action: () -> Unit) {
         ActivityScenario.launch(FactActivity::class.java).use { scenario ->
             scenario.onActivity { activity ->
