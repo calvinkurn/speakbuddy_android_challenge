@@ -33,6 +33,4 @@ jobs:
         run: ./gradlew assembleRelease
 
       - name: Upload to Firebase App Distribution
-        run: ./gradlew appDistributionUploadRelease
-        env:
-          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
+        run: ./gradlew appDistributionUploadRelease --stacktrace
