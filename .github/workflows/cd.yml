@@ -31,9 +31,10 @@ jobs:
           firebase --version
 
       - name: Authenticate Firebase
+        env:
+            GOOGLE_APPLICATION_CREDENTIALS: firebase-service-account.json
         run: |
-          firebase auth:login:ci --no-localhost
-          firebase use --add --json ./firebase-service-account.json
+            firebase projects:list
 
       - name: Build Release APK
         run: ./gradlew assembleRelease
