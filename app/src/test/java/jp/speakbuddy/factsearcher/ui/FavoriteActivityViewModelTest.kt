@@ -104,7 +104,7 @@ class FavoriteActivityViewModelTest {
     }
 
     @Test
-    fun `Should update language to JP`() = runTest {
+    fun `Should update and get current preference language`() = runTest {
         val expectedLocale = Locale.JAPAN
 
         coEvery { userPreferenceRepository.setUserPreferenceLanguage(any()) } just Runs
