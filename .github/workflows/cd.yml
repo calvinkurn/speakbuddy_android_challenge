@@ -29,8 +29,8 @@ jobs:
 
       - name: Authenticate with Firebase
         run: |
-          echo "${{ secrets.FIREBASE_TOKEN }}" > "${HOME}/firebase-token.txt"
-          export FIREBASE_TOKEN=$(cat "${HOME}/firebase-token.txt")
+          echo "${{ secrets.FIREBASE_SERVICE_ACCOUNT }}" > "${HOME}/firebase-credentials.json"
+          export FIREBASE_TOKEN=$(cat "${HOME}/firebase-credentials.json")
 
       - name: Upload to Firebase App Distribution
         run: ./gradlew appDistributionUploadRelease --stacktrace
