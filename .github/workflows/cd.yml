@@ -24,13 +24,10 @@ jobs:
           curl -sL https://firebase.tools | bash
           firebase --version
 
-      - name: Authenticate with Firebase
-        run: |
-          echo "${{ secrets.FIREBASE_SERVICE_ACCOUNT }}" > "${HOME}/firebase-credentials.json"
-          export GOOGLE_APPLICATION_CREDENTIALS="${HOME}/firebase-credentials.json"
-
       - name: Build Release APK
         run: ./gradlew assembleRelease
 
       - name: Upload to Firebase App Distribution
         run: ./gradlew appDistributionUploadRelease --stacktrace
+        env:
+          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
