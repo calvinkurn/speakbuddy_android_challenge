@@ -1,0 +1,33 @@
+name: Build and Generate google-services.json
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up JDK
+        uses: actions/setup-java@v2
+        with:
+          java-version: 17
+
+      - name: Set environment variables
+        env:
+          FIREBASE_PROJECT_NUMBER: ${{ secrets.FIREBASE_PROJECT_NUMBER }}
+          FIREBASE_PROJECT_ID: ${{ secrets.FIREBASE_PROJECT_ID }}
+          FIREBASE_STORAGE_BUCKET: ${{ secrets.FIREBASE_STORAGE_BUCKET }}
+          FIREBASE_MOBILESDK_APP_ID: ${{ secrets.FIREBASE_MOBILESDK_APP_ID }}
+          FIREBASE_CLIENT_PACKAGE_NAME: ${{ secrets.FIREBASE_CLIENT_PACKAGE_NAME }}
+          FIREBASE_API_KEY: ${{ secrets.FIREBASE_API_KEY }}
+        run: bash google-service-generator.sh
+          # Run the script to generate google-services.json
+
+      - name: Build the Android app
+        run: ./gradlew assembleRelease
