@@ -4,13 +4,17 @@ import app.cash.turbine.test
 import io.mockk.Runs
 import io.mockk.clearMocks
 import io.mockk.coEvery
+import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.just
 import io.mockk.mockk
+import io.mockk.verify
 import jp.speakbuddy.factsearcher.di.DispatchersProvider
 import jp.speakbuddy.factsearcher.ui.data.FactUiModel
 import jp.speakbuddy.factsearcher.domain.repository.DataStoreRepository
+import jp.speakbuddy.factsearcher.domain.repository.UserPreferenceRepository
 import jp.speakbuddy.factsearcher.domain.usecase.FavoriteUseCase
+import jp.speakbuddy.factsearcher.domain.usecase.UserPreferencesUseCase
 import jp.speakbuddy.factsearcher.ui.eventstate.FavoriteUiEvent
 import jp.speakbuddy.factsearcher.ui.eventstate.FavoriteUiState
 import jp.speakbuddy.factsearcher.ui.viewmodel.FavoriteActivityViewModel
@@ -20,12 +24,15 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import org.junit.Assert.*
+import java.util.Locale
 
 class FavoriteActivityViewModelTest {
     private val dataStoreRepository: DataStoreRepository = mockk()
     private val dispatchersProvider: DispatchersProvider = mockk()
+    private val userPreferenceRepository: UserPreferenceRepository = mockk()
 
     private lateinit var favoriteUseCase: FavoriteUseCase
+    private lateinit var userPreferencesUseCase: UserPreferencesUseCase
 
     private lateinit var viewModel: FavoriteActivityViewModel
 
@@ -36,10 +43,12 @@ class FavoriteActivityViewModelTest {
         every { dispatchersProvider.default } returns Dispatchers.Unconfined
 
         favoriteUseCase = FavoriteUseCase(dataStoreRepository)
+        userPreferencesUseCase = UserPreferencesUseCase(userPreferenceRepository)
 
         viewModel = FavoriteActivityViewModel(
             favoriteUseCase = favoriteUseCase,
-            dispatchersProvider = dispatchersProvider
+            dispatchersProvider = dispatchersProvider,
+            userPreferencesUseCase = userPreferencesUseCase
         )
     }
 
@@ -89,6 +98,23 @@ class FavoriteActivityViewModelTest {
             val favoriteListItem = (successItem as FavoriteUiState.Success).favoriteFactList
             assertTrue(favoriteListItem.size == expectedResult.size)
             assertTrue(favoriteListItem.first().fact == expectedResult.first().fact)
+
+            cancelAndIgnoreRemainingEvents()
+        }
+    }
+
+    @Test
+    fun `Should update language to JP`() = runTest {
+        val expectedLocale = Locale.JAPAN
+
+        coEvery { userPreferenceRepository.setUserPreferenceLanguage(any()) } just Runs
+
+        viewModel.uiState.test {
+            skipItems(1)
+
+            viewModel.onEvent(FavoriteUiEvent.UpdatePreferenceLanguage(expectedLocale))
+
+            coVerify { userPreferenceRepository.setUserPreferenceLanguage(any()) }
 
             cancelAndIgnoreRemainingEvents()
         }
