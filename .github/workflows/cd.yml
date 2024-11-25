@@ -40,4 +40,6 @@ jobs:
         run: ./gradlew assembleRelease
 
       - name: Upload to Firebase App Distribution
+        env:
+          GOOGLE_APPLICATION_CREDENTIALS: firebase-service-account.json
         run: ./gradlew appDistributionUploadRelease --stacktrace
