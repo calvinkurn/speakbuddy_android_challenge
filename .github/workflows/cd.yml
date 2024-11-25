@@ -1,7 +1,7 @@
 name: Build and Generate google-services.json
 
 on:
-  push:
+  pull_request:
     branches:
       - main
 
