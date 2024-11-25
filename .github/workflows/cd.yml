@@ -1,4 +1,4 @@
-name: Build and Generate google-services.json
+name: Build and Upload
 
 on:
   pull_request:
@@ -19,16 +19,20 @@ jobs:
           java-version: 17
           distribution: temurin
 
-      - name: Set environment variables
-        env:
-          FIREBASE_PROJECT_NUMBER: ${{ secrets.FIREBASE_PROJECT_NUMBER }}
-          FIREBASE_PROJECT_ID: ${{ secrets.FIREBASE_PROJECT_ID }}
-          FIREBASE_STORAGE_BUCKET: ${{ secrets.FIREBASE_STORAGE_BUCKET }}
-          FIREBASE_MOBILESDK_APP_ID: ${{ secrets.FIREBASE_MOBILESDK_APP_ID }}
-          FIREBASE_CLIENT_PACKAGE_NAME: ${{ secrets.FIREBASE_CLIENT_PACKAGE_NAME }}
-          FIREBASE_API_KEY: ${{ secrets.FIREBASE_API_KEY }}
-        run: bash google-service-generator.sh
-          # Run the script to generate google-services.json
+      - name: Set up Firebase CLI
+        run: |
+          curl -sL https://firebase.tools | bash
+          firebase --version
 
-      - name: Build & Upload the Android app
-        run: ./gradlew assembleRelease appDistributionUploadRelease
+      - name: Authenticate with Firebase
+        run: |
+          echo "${{ secrets.FIREBASE_SERVICE_ACCOUNT }}" > "${HOME}/firebase-credentials.json"
+          export GOOGLE_APPLICATION_CREDENTIALS="${HOME}/firebase-credentials.json"
+
+      - name: Build Release APK
+        run: ./gradlew assembleRelease
+
+      - name: Upload to Firebase App Distribution
+        run: ./gradlew appDistributionUploadRelease
+        env:
+          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
