@@ -8,6 +8,7 @@ import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.just
 import io.mockk.mockk
+import io.mockk.verify
 import jp.speakbuddy.factsearcher.data.network.FactNetworkModel
 import jp.speakbuddy.factsearcher.di.DispatchersProvider
 import jp.speakbuddy.factsearcher.ui.data.FactUiModel
@@ -20,6 +21,7 @@ import jp.speakbuddy.factsearcher.domain.usecase.SaveDataUseCase
 import jp.speakbuddy.factsearcher.domain.usecase.UserPreferencesUseCase
 import jp.speakbuddy.factsearcher.ui.eventstate.FactUiEvent
 import jp.speakbuddy.factsearcher.ui.eventstate.FactUiState
+import jp.speakbuddy.factsearcher.ui.eventstate.FavoriteUiEvent
 import jp.speakbuddy.factsearcher.ui.viewmodel.FactActivityViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.test.runTest
@@ -152,6 +154,27 @@ class FactActivityViewModelTest {
 
             skipItems(2)
             coVerify { dataStoreRepository.saveLatestFact(any()) }
+            cancelAndIgnoreRemainingEvents()
+        }
+    }
+
+    @Test
+    fun `Should update and get current preference language`() = runTest {
+        val expectedLocale = Locale.JAPAN
+
+        coEvery { userPreferenceRepository.setUserPreferenceLanguage(any()) } just Runs
+        coEvery { userPreferenceRepository.getUserPreferenceLanguage() } returns expectedLocale
+
+        viewModel.getLanguagePreference()
+        verify { userPreferenceRepository.getUserPreferenceLanguage() }
+
+        viewModel.uiState.test {
+            skipItems(1)
+
+            viewModel.onEvent(FactUiEvent.UpdatePreferenceLanguage(expectedLocale))
+
+            coVerify { userPreferenceRepository.setUserPreferenceLanguage(any()) }
+
             cancelAndIgnoreRemainingEvents()
         }
     }
