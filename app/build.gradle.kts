@@ -163,4 +163,5 @@ firebaseAppDistribution {
     appId = "1:608780934909:android:d11b897b345a0578a6e894"
     testers = "calvin.kurn@gmail.com"
     releaseNotes = "Test release app"
+    serviceCredentialsFile = "firebase-token.txt"
 }
