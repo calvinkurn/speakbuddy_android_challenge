@@ -19,18 +19,24 @@ jobs:
           java-version: 17
           distribution: temurin
 
+      - name: Decrypt Firebase Service Account
+        env:
+            FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+        run: |
+            echo "$FIREBASE_SERVICE_ACCOUNT" > firebase-service-account.json
+
       - name: Set up Firebase CLI
         run: |
           curl -sL https://firebase.tools | bash
           firebase --version
 
+      - name: Authenticate Firebase
+        run: |
+          firebase auth:login:ci --no-localhost
+          firebase use --add --json ./firebase-service-account.json
+
       - name: Build Release APK
         run: ./gradlew assembleRelease
-
-      - name: Authenticate with Firebase
-        run: |
-          echo "${{ secrets.FIREBASE_SERVICE_ACCOUNT }}" > "${HOME}/firebase-credentials.json"
-          export FIREBASE_TOKEN=$(cat "${HOME}/firebase-credentials.json")
 
       - name: Upload to Firebase App Distribution
         run: ./gradlew appDistributionUploadRelease --stacktrace
