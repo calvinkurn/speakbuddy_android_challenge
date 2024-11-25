@@ -5,9 +5,12 @@ plugins {
     alias(libs.plugins.dagger.hilt)
     alias(libs.plugins.google.protobuf)
     alias(libs.plugins.kotlin.compose)
+
     kotlin("kapt")
 
     jacoco
+
+    alias(libs.plugins.firebase.appdistribution)
 }
 
 android {
@@ -154,4 +157,10 @@ tasks.register("generateCodeCoverageReport") {
     description = "Runs unit tests and generates the JaCoCo code coverage report."
 
     dependsOn("testDebugUnitTest", "jacocoTestReport")
+}
+
+firebaseAppDistribution {
+    appId = "1:608780934909:android:d11b897b345a0578a6e894"
+    testers = "calvin.kurn@gmail.com"
+    releaseNotes = "Test release app"
 }
