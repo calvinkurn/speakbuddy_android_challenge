@@ -9,6 +9,7 @@ import jp.speakbuddy.factsearcher.domain.usecase.FavoriteUseCase
 import jp.speakbuddy.factsearcher.domain.usecase.UserPreferencesUseCase
 import jp.speakbuddy.factsearcher.ui.eventstate.FavoriteUiEvent
 import jp.speakbuddy.factsearcher.ui.eventstate.FavoriteUiState
+import jp.speakbuddy.factsearcher.ui.utils.LocaleManager
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import java.util.Locale
@@ -54,6 +55,8 @@ class FavoriteActivityViewModel @Inject constructor(
     }
 
     private fun updateLanguage(locale: Locale) {
+        LocaleManager.updateLocale(locale, LocaleManager.PAGE_ID_FAVORITE)
+
         viewModelScope.launch(dispatchersProvider.io) {
             userPreferencesUseCase.updateLanguagePreference(locale)
         }

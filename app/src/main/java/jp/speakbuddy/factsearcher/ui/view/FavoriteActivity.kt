@@ -12,6 +12,7 @@ import jp.speakbuddy.factsearcher.ui.eventstate.FavoriteUiEvent
 import jp.speakbuddy.factsearcher.ui.eventstate.FavoriteUiState
 import jp.speakbuddy.factsearcher.ui.screen.FavoriteActivityScreen
 import jp.speakbuddy.factsearcher.ui.theme.FactTheme
+import jp.speakbuddy.factsearcher.ui.utils.LocaleManager
 import jp.speakbuddy.factsearcher.ui.viewmodel.FavoriteActivityViewModel
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -42,6 +43,11 @@ class FavoriteActivity : ComponentActivity() {
         fetchFavoriteItem()
     }
 
+    override fun onResume() {
+        super.onResume()
+        LocaleManager.checkPageLocale(this)
+    }
+
     private fun observe() {
         lifecycleScope.launch {
             viewModel.uiState.collectLatest {
@@ -69,13 +75,15 @@ class FavoriteActivity : ComponentActivity() {
     }
 
     private fun updateLocale(locale: Locale){
-        val config = this.resources.configuration.apply {
-            setLocale(locale)
+        if (locale != this.resources.configuration.locales[0]) {
+            val config = this.resources.configuration.apply {
+                setLocale(locale)
+            }
+
+            this.resources.updateConfiguration(config, this.resources.displayMetrics)
+
+            viewModel.onEvent(FavoriteUiEvent.UpdatePreferenceLanguage(locale))
+            this.recreate()
         }
-
-        this.resources.updateConfiguration(config, this.resources.displayMetrics)
-
-        viewModel.onEvent(FavoriteUiEvent.UpdatePreferenceLanguage(locale))
-        this.recreate()
     }
 }

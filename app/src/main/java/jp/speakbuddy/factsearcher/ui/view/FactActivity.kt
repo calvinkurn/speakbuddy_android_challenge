@@ -2,6 +2,7 @@ package jp.speakbuddy.factsearcher.ui.view
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
@@ -16,6 +17,7 @@ import jp.speakbuddy.factsearcher.ui.eventstate.FactUiState
 import jp.speakbuddy.factsearcher.ui.screen.FactActivityScreen
 import jp.speakbuddy.factsearcher.ui.viewmodel.FactActivityViewModel
 import jp.speakbuddy.factsearcher.ui.theme.FactTheme
+import jp.speakbuddy.factsearcher.ui.utils.LocaleManager
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import java.util.Locale
@@ -69,6 +71,7 @@ class FactActivity : ComponentActivity() {
     override fun onResume() {
         super.onResume()
         viewModel.onEvent(FactUiEvent.CheckFavorite)
+        LocaleManager.checkPageLocale(this)
     }
 
     override fun onPause() {
@@ -96,16 +99,18 @@ class FactActivity : ComponentActivity() {
     }
 
     private fun updateLocale(locale: Locale, updatePreference: Boolean = true){
-        val config = this.resources.configuration.apply {
-            setLocale(locale)
-        }
+        if (locale != this.resources.configuration.locales[0]) {
+            val config = this.resources.configuration.apply {
+                setLocale(locale)
+            }
 
-        this.resources.updateConfiguration(config, this.resources.displayMetrics)
+            this.resources.updateConfiguration(config, this.resources.displayMetrics)
 
-        if (updatePreference) {
-            viewModel.onEvent(FactUiEvent.UpdatePreferenceLanguage(locale))
-            isRecreate = true
-            this.recreate()
+            if (updatePreference) {
+                viewModel.onEvent(FactUiEvent.UpdatePreferenceLanguage(locale))
+                isRecreate = true
+                this.recreate()
+            }
         }
     }
 

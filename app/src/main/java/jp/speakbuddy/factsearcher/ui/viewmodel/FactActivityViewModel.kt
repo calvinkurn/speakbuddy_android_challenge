@@ -13,6 +13,7 @@ import jp.speakbuddy.factsearcher.domain.usecase.UserPreferencesUseCase
 import jp.speakbuddy.factsearcher.domain.usecase.utils.FactResult
 import jp.speakbuddy.factsearcher.ui.eventstate.FactUiEvent
 import jp.speakbuddy.factsearcher.ui.eventstate.FactUiState
+import jp.speakbuddy.factsearcher.ui.utils.LocaleManager
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import java.util.Locale
@@ -132,6 +133,8 @@ class FactActivityViewModel @Inject constructor(
     }
 
     private fun updateLanguage(locale: Locale) {
+        LocaleManager.updateLocale(locale, LocaleManager.PAGE_ID_FACT)
+
         viewModelScope.launch(dispatchersProvider.io) {
             userPreferencesUseCase.updateLanguagePreference(locale)
         }
