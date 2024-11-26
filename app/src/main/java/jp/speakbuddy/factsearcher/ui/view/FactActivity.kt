@@ -1,0 +1,141 @@
+package jp.speakbuddy.factsearcher.ui.view
+
+import android.content.Intent
+import android.os.Bundle
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
+import androidx.activity.viewModels
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
+import androidx.lifecycle.lifecycleScope
+import dagger.hilt.android.AndroidEntryPoint
+import jp.speakbuddy.factsearcher.ui.data.DefaultFactUiModel
+import jp.speakbuddy.factsearcher.ui.eventstate.FactUiEvent
+import jp.speakbuddy.factsearcher.ui.eventstate.FactUiState
+import jp.speakbuddy.factsearcher.ui.screen.FactActivityScreen
+import jp.speakbuddy.factsearcher.ui.viewmodel.FactActivityViewModel
+import jp.speakbuddy.factsearcher.ui.theme.FactTheme
+import jp.speakbuddy.factsearcher.ui.utils.LocaleManager
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
+import java.util.Locale
+
+@AndroidEntryPoint
+class FactActivity : ComponentActivity() {
+    private val viewModel: FactActivityViewModel by viewModels()
+
+    private var factIsLoading by mutableStateOf(false)
+    private var factData by mutableStateOf(DefaultFactUiModel)
+    private var isFactFavorite by mutableStateOf(false)
+    private var errorMsg by mutableStateOf("")
+
+    private var isRecreate = false
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        if (savedInstanceState == null) {
+            // can be adjust between waiting on splash screen / waiting on home page to implement preference
+            // waiting on splash screen to avoid re-create
+            viewModel.getLanguagePreference().let {
+                if (this.resources.configuration.locales[0] != it) {
+                    LocaleManager.updateLocale(it, LocaleManager.PAGE_ID_FACT)
+                    updateLocale(it, false)
+                }
+            }
+        }
+
+        setContent {
+            FactTheme(
+                dynamicColor = false
+            ) {
+                FactActivityScreen(
+                    factData = factData,
+                    isFactFavorite = isFactFavorite,
+                    isLoading = factIsLoading,
+                    errorMsg = errorMsg,
+                    onErrorDismiss = { errorMsg = "" },
+                    onUpdateFactClicked = { if (!factIsLoading){ updateFact() } },
+                    onNavigateToFavorite = { navigateToFavoritePage() },
+                    onFavoriteClicked = { addFavoriteFact() },
+                    onLocaleSelected = { updateLocale(it) }
+                )
+            }
+        }
+
+        observe()
+        getLastFact()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        viewModel.onEvent(FactUiEvent.CheckFavorite)
+        LocaleManager.checkPageLocale(this)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        if (!isRecreate) {
+            viewModel.onEvent(FactUiEvent.SaveFact)
+        }
+    }
+
+    private fun getLastFact() {
+        viewModel.onEvent(FactUiEvent.RestoreSavedFact)
+    }
+
+    private fun updateFact() {
+        viewModel.onEvent(FactUiEvent.GetFact)
+    }
+
+    private fun addFavoriteFact() {
+        viewModel.onEvent(FactUiEvent.AddFactToFavorite)
+    }
+
+    private fun navigateToFavoritePage() {
+        val intent = Intent(this, FavoriteActivity::class.java)
+        startActivity(intent)
+    }
+
+    private fun updateLocale(locale: Locale, updatePreference: Boolean = true){
+        if (locale != this.resources.configuration.locales[0]) {
+            val config = this.resources.configuration.apply {
+                setLocale(locale)
+            }
+
+            this.resources.updateConfiguration(config, this.resources.displayMetrics)
+
+            if (updatePreference) {
+                viewModel.onEvent(FactUiEvent.UpdatePreferenceLanguage(locale))
+                isRecreate = true
+                this.recreate()
+            }
+        }
+    }
+
+    private fun observe() {
+        lifecycleScope.launch {
+            viewModel.uiState.collectLatest {
+                when(it) {
+                    is FactUiState.Loading -> {
+                        factIsLoading = true
+                    }
+                    is FactUiState.Success -> {
+                        factData = it.data
+                        isFactFavorite = it.isFavorite
+                        factIsLoading = false
+                    }
+                    is FactUiState.FavoriteFact -> {
+                        isFactFavorite = it.isFavorite
+                    }
+                    is FactUiState.Error -> {
+                        errorMsg = it.errorMsg
+                        factIsLoading = false
+                    }
+                    else -> {}
+                }
+            }
+        }
+    }
+}

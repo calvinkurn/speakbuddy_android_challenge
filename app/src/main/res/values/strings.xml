@@ -1,3 +1,25 @@
 <resources>
-    <string name="app_name">Edison Android Exercise</string>
+    <string name="app_name">Cat Trivia</string>
+
+    <!-- Fact Widget -->
+    <string name="fact_widget_title">Fact</string>
+    <string name="fact_multiple_cat">Multiple cats!</string>
+    <string name="fact_content_length">Content length: %d character</string>
+
+    <!-- Fact Page -->
+    <string name="fact_page_button_update_label">Update Fact</string>
+    <string name="fact_page_button_favorite_label">Favorite Fact</string>
+    <string name="fact_page_title">Cat Fact</string>
+
+    <!-- Error Widget -->
+    <string name="error_widget_title">Error</string>
+    <string name="error_widget_btn_label">OK</string>
+
+    <!-- Favorite Page -->
+    <string name="favorite_page_title">Favorite fact</string>
+
+    <!-- Content Description -->
+    <string name="like_animation_content_description">Animate Love icon</string>
+    <string name="favorite_icon_content_description">Favorite icon</string>
+    <string name="back_icon_content_description">Back to previous page icon</string>
 </resources>

@@ -1,0 +1,45 @@
+name: Build and Upload
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up JDK
+        uses: actions/setup-java@v2
+        with:
+          java-version: 17
+          distribution: temurin
+
+      - name: Decrypt Firebase Service Account
+        env:
+            FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+        run: |
+            echo "$FIREBASE_SERVICE_ACCOUNT" > firebase-service-account.json
+
+      - name: Set up Firebase CLI
+        run: |
+          curl -sL https://firebase.tools | bash
+          firebase --version
+
+      - name: Authenticate Firebase
+        env:
+            GOOGLE_APPLICATION_CREDENTIALS: firebase-service-account.json
+        run: |
+            firebase projects:list
+
+      - name: Build Release APK
+        run: ./gradlew assembleRelease
+
+      - name: Upload to Firebase App Distribution
+        env:
+          GOOGLE_APPLICATION_CREDENTIALS: firebase-service-account.json
+        run: ./gradlew appDistributionUploadRelease --stacktrace
