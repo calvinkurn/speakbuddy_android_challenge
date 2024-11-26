@@ -1,21 +1,17 @@
 package jp.speakbuddy.factsearcher.ui.widget
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -24,61 +20,58 @@ import androidx.compose.ui.unit.dp
 import jp.speakbuddy.factsearcher.R
 import java.util.Locale
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HeaderWidget(
-    modifier: Modifier = Modifier,
     title: String,
     withBackButton: Boolean = true,
     onBackClick: () -> Unit = {},
     onLocaleSelected: (locale: Locale) -> Unit = {}
 ) {
-    HorizontalDivider(
-        modifier = Modifier.fillMaxWidth(),
-        thickness = 1.dp,
-        color = MaterialTheme.colorScheme.onPrimary
-    )
-    Row(
-        modifier = modifier
-            .fillMaxWidth()
-            .background(MaterialTheme.colorScheme.primary)
-            .padding(8.dp)
-            .height(40.dp),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        if (withBackButton) {
-            IconButton(onClick = onBackClick, modifier = Modifier.size(height = 24.dp, width = 32.dp).padding(end = 8.dp)) {
-                Icon(
-                    modifier = Modifier.size(24.dp),
-                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                    contentDescription = stringResource(R.string.back_icon_content_description),
-                    tint = MaterialTheme.colorScheme.onPrimary
-                )
+    TopAppBar(
+        colors = TopAppBarDefaults.topAppBarColors(
+            containerColor = MaterialTheme.colorScheme.primary,
+            titleContentColor = MaterialTheme.colorScheme.primary,
+        ),
+        title = {
+            Text(
+                text = title,
+                style = MaterialTheme.typography.titleMedium,
+                color = MaterialTheme.colorScheme.onPrimary
+            )
+        },
+        actions = {
+            LanguageWidget(
+                currentLocale = LocalContext.current.resources.configuration.locales[0],
+                locales = listOf(Locale.US, Locale.JAPAN),
+                onLocaleSelected = {
+                    onLocaleSelected(it)
+                }
+            )
+        },
+        navigationIcon = {
+            if (withBackButton) {
+                IconButton(
+                    onClick = onBackClick,
+                    modifier = Modifier
+                        .size(height = 24.dp, width = 32.dp)
+                        .padding(end = 8.dp)
+                ) {
+                    Icon(
+                        modifier = Modifier.size(24.dp),
+                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                        contentDescription = stringResource(R.string.back_icon_content_description),
+                        tint = MaterialTheme.colorScheme.onPrimary
+                    )
+                }
             }
         }
-
-        Text(
-            text = title,
-            style = MaterialTheme.typography.titleMedium,
-            color = MaterialTheme.colorScheme.onPrimary
-        )
-
-        Spacer(
-            modifier = Modifier.weight(1f)
-        )
-
-        LanguageWidget(
-            currentLocale = LocalContext.current.resources.configuration.locales[0],
-            locales = listOf(Locale.US, Locale.JAPAN),
-            onLocaleSelected = {
-                onLocaleSelected(it)
-            }
-        )
-    }
+    )
 }
 
 @Preview
 @Composable
-private fun HeaderWidgetPreview(){
+private fun HeaderWidgetPreview() {
     HeaderWidget(
         title = "Sample Title",
     )

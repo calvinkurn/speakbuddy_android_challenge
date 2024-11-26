@@ -3,14 +3,11 @@ package jp.speakbuddy.factsearcher.ui.screen
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -26,7 +23,6 @@ import jp.speakbuddy.factsearcher.ui.data.FactUiModel
 import jp.speakbuddy.factsearcher.ui.theme.LocalCustomColorsPalette
 import jp.speakbuddy.factsearcher.ui.widget.ErrorPopup
 import jp.speakbuddy.factsearcher.ui.widget.FactWidget
-import jp.speakbuddy.factsearcher.ui.widget.HeaderWidget
 import java.util.Locale
 
 const val FACT_SCREEN_FAVORITE_BUTTON_TAG = "FACT_SCREEN_FAVORITE_BUTTON_TAG"
@@ -44,19 +40,14 @@ fun FactActivityScreen(
     onUpdateFactClicked: () -> Unit,
     onLocaleSelected: (Locale) -> Unit
 ) {
-    Surface(
-        modifier = Modifier.fillMaxSize(),
-        color = MaterialTheme.colorScheme.background
-    ) {
-        Column {
-            HeaderWidget(
-                withBackButton = false,
-                title = stringResource(R.string.fact_page_title),
-                onLocaleSelected = {
-                    onLocaleSelected(it)
-                }
-            )
-
+    ScreenBase(
+        pageTitle = stringResource(R.string.fact_page_title),
+        withBackNavigation = false,
+        onLocaleUpdate = { onLocaleSelected(it) }
+    ) { innerPadding ->
+        Column(
+            modifier = Modifier.padding(innerPadding)
+        ) {
             Column(
                 Modifier
                     .weight(1f)
