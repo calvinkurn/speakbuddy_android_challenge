@@ -8,7 +8,10 @@ import java.util.Locale
  * Need to control all page locale since we have language feature on all pages
  */
 object LocaleManager {
-    private var currentLocale: Locale = Locale.US
+    const val PAGE_ID_FACT = 135
+    const val PAGE_ID_FAVORITE = 246
+
+    private var currentLocale: Locale? = null
     private val localeState: MutableMap<Int, Locale> = mutableMapOf()
 
     fun checkPageLocale(activity: ComponentActivity) {
@@ -17,17 +20,19 @@ object LocaleManager {
             else -> PAGE_ID_FAVORITE
         }
 
-        if (currentLocale != localeState.getOrDefault(pageId, currentLocale)) {
-            localeState[pageId] = currentLocale
+        if (currentLocale != localeState[pageId] && currentLocale != null) {
+            localeState[pageId] = currentLocale!!
             activity.recreate()
         }
     }
 
     fun updateLocale(locale: Locale, pageId: Int) {
+        if (currentLocale == null) {
+            localeState[PAGE_ID_FACT] = locale
+            localeState[PAGE_ID_FAVORITE] = locale
+        }
+
         currentLocale = locale
         localeState[pageId] = locale
     }
-
-    const val PAGE_ID_FACT = 135
-    const val PAGE_ID_FAVORITE = 246
 }

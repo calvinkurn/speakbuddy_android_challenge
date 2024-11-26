@@ -2,7 +2,6 @@ package jp.speakbuddy.factsearcher.ui.view
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
@@ -41,6 +40,7 @@ class FactActivity : ComponentActivity() {
             // waiting on splash screen to avoid re-create
             viewModel.getLanguagePreference().let {
                 if (this.resources.configuration.locales[0] != it) {
+                    LocaleManager.updateLocale(it, LocaleManager.PAGE_ID_FACT)
                     updateLocale(it, false)
                 }
             }
