@@ -4,7 +4,6 @@ import androidx.compose.ui.semantics.SemanticsProperties
 import androidx.compose.ui.semantics.getOrNull
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertIsNotDisplayed
-import androidx.compose.ui.test.isDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
@@ -17,10 +16,12 @@ import dagger.hilt.android.testing.HiltAndroidTest
 import jp.speakbuddy.factsearcher.R
 import jp.speakbuddy.factsearcher.ui.screen.FACT_SCREEN_FAVORITE_BUTTON_TAG
 import jp.speakbuddy.factsearcher.ui.screen.FACT_SCREEN_UPDATE_FACT_BUTTON_TAG
+import jp.speakbuddy.factsearcher.ui.utils.LocaleManager
 import jp.speakbuddy.factsearcher.ui.view.FactActivity
 import jp.speakbuddy.factsearcher.ui.widget.FACT_WIDGET_CONTENT_TAG
 import jp.speakbuddy.factsearcher.ui.widget.FACT_WIDGET_LIKE_BUTTON
 import jp.speakbuddy.factsearcher.ui.widget.FACT_WIDGET_TAG
+import jp.speakbuddy.factsearcher.ui.widget.HEADER_BACK_NAVIGATION_TAG
 import jp.speakbuddy.factsearcher.ui.widget.LANGUAGE_WIDGET_ICON
 import jp.speakbuddy.factsearcher.ui.widget.LANGUAGE_WIDGET_ITEM_JP
 import jp.speakbuddy.factsearcher.utils.getLocalizedString
@@ -133,7 +134,7 @@ class TestActivity {
             val localizedContext = appContext.setLocale(Locale.JAPAN)
             val pageTitle = localizedContext.getLocalizedString(R.string.fact_page_title)
 
-            composeTestRule.onNodeWithText(pageTitle).isDisplayed()
+            composeTestRule.onNodeWithText(pageTitle).assertIsDisplayed()
         }
     }
 
@@ -164,9 +165,47 @@ class TestActivity {
 
             val appContext = InstrumentationRegistry.getInstrumentation().targetContext
             val localizedContext = appContext.setLocale(Locale.JAPAN)
+            val pageTitle = localizedContext.getLocalizedString(R.string.favorite_page_title)
+
+            composeTestRule.onNodeWithText(pageTitle).assertIsDisplayed()
+        }
+    }
+
+    // test change language and back to previous page
+    @Test
+    fun testBackNavigationWithLanguageUpdate() {
+        launchActivity {
+            LocaleManager.updateLocale(Locale.US, LocaleManager.PAGE_ID_FACT)
+
+            composeTestRule.onNodeWithTag(FACT_WIDGET_TAG).assertIsDisplayed()
+
+            val node = composeTestRule.onNodeWithTag(FACT_WIDGET_CONTENT_TAG).fetchSemanticsNode()
+            val text = node.config.getOrNull(SemanticsProperties.Text)
+            assertTrue(!text.isNullOrEmpty())
+
+            composeTestRule.onNodeWithTag(FACT_WIDGET_LIKE_BUTTON).performClick()
+            composeTestRule.onNodeWithTag(FACT_SCREEN_FAVORITE_BUTTON_TAG).performClick()
+
+            val node2 = composeTestRule.onNodeWithTag(FACT_WIDGET_CONTENT_TAG).fetchSemanticsNode()
+            val text2 = node2.config.getOrNull(SemanticsProperties.Text)
+            assertTrue(!text.isNullOrEmpty())
+
+            composeTestRule.onNodeWithTag(FACT_WIDGET_TAG).assertIsDisplayed()
+            assertEquals(text2, text)
+
+            composeTestRule.onNodeWithTag(LANGUAGE_WIDGET_ICON).performClick()
+            composeTestRule.waitForIdle()
+            composeTestRule.onNodeWithTag(LANGUAGE_WIDGET_ITEM_JP).performClick()
+            composeTestRule.waitForIdle()
+
+            composeTestRule.onNodeWithTag(HEADER_BACK_NAVIGATION_TAG).performClick()
+
+            val appContext = InstrumentationRegistry.getInstrumentation().targetContext
+            val localizedContext = appContext.setLocale(Locale.JAPAN)
             val pageTitle = localizedContext.getLocalizedString(R.string.fact_page_title)
 
-            composeTestRule.onNodeWithText(pageTitle).isDisplayed()
+            composeTestRule.waitForIdle()
+            composeTestRule.onNodeWithText(pageTitle).assertIsDisplayed()
         }
     }
 

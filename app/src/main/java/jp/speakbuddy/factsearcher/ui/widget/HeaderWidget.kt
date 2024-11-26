@@ -14,11 +14,14 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import jp.speakbuddy.factsearcher.R
 import java.util.Locale
+
+const val HEADER_BACK_NAVIGATION_TAG = "HEADER_BACK_NAVIGATION_TAG"
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -56,6 +59,7 @@ fun HeaderWidget(
                     modifier = Modifier
                         .size(height = 24.dp, width = 32.dp)
                         .padding(end = 8.dp)
+                        .testTag(HEADER_BACK_NAVIGATION_TAG)
                 ) {
                     Icon(
                         modifier = Modifier.size(24.dp),
